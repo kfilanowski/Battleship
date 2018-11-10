@@ -1,5 +1,21 @@
 package client;
 
-public class PrintStreamMessageListener {
+import java.io.PrintStream;
 
+import common.MessageSource;
+
+public class PrintStreamMessageListener {
+	private PrintStream out;
+	
+	public /*ctor?*/ PrintStreamMessageListener(PrintStream out) {
+		
+	}
+	
+	public void messageReceived(String message, MessageSource source) {
+		
+	}
+	
+	public void sourceClosed(MessageSource source) {
+		
+	}
 }
