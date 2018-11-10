@@ -10,15 +10,15 @@ import java.util.Random;
  * @version 11/9/2018
  */
 public class Grid {
-    /** Our 2D grid for the player's battleship*/
+    /** Our 2D grid for the player's battleship */
     private char[][] grid;
-    /** Our 2D grid for displaying the player's grid to other players*/
+    /** Our 2D grid for displaying the player's grid to other players */
     private char[][] publicGrid;
-    /** A random number generator for randomly placing ships*/
+    /** A random number generator for randomly placing ships */
     private Random random;
     /** the size of our grid*/
     private int sizeOfGrid;
-    /** Keeps track of how many ships have been hit on this grid*/
+    /** Keeps track of how many ships have been hit on this grid */
     private int numOfHits;
 
     /**

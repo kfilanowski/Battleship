@@ -9,11 +9,11 @@ import java.util.ArrayList;
  * @version November 2018
  */
 public class Game {
-	/** Holds the grids for the game. Player 0 will be grid at index 0, etc. **/
+	/** Holds the grids for the game. Player 0 will be grid at index 0, etc. */
 	ArrayList<Grid> gridList;
-	/** The default size of the grid for the game. **/
+	/** The default size of the grid for the game. */
 	private static final int DEFAULT_GRID_SIZE = 10;
-	/** The size of the grid for the game. **/
+	/** The size of the grid for the game. */
 	private int gridSize;
 	
 	/**

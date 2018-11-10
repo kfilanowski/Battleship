@@ -11,15 +11,15 @@ import common.MessageSource;
  * @version November 2018
  */
 public class BattleServer {
-	/** The default port for the server. **/
+	/** The default port for the server. */
 	private static final int DEFAULT_PORT = 8674;
-	/** The port for the battle server. **/
+	/** The port for the battle server. */
 	private int port;
-	/** The server socket. **/
+	/** The server socket. */
 	private ServerSocket serverSocket;
-	/** TODO **/
+	/** TODO */
 	private int current;
-	/** Game class for game logic. **/
+	/** Game class for game logic. */
 	Game game;
 	
 	/**

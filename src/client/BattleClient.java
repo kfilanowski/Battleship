@@ -12,11 +12,11 @@ import common.MessageSource;
  * @version November 2018
  */
 public class BattleClient {
-	/** The address of the server to connect to. **/
+	/** The address of the server to connect to. */
 	private InetAddress host;
-	/** The port number to connect to. **/
+	/** The port number to connect to. */
 	private int port;
-	/** The username of the client. **/
+	/** The username of the client. */
 	private String username;
 	
 	/**
