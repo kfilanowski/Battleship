@@ -1,7 +1,7 @@
 package server;
 
 /**
- * 
+ * Initializes a BattleServer for the BattleShip Game.
  * @author Kevin Filanowski
  * @author Jeriah Caplinger
  * @version November 2018
@@ -18,7 +18,8 @@ public class BattleShipDriver {
 	}
 	
 	/**
-	 * 
+	 * Constructor for BattleShipDriver. Initializes a BattleServer
+	 * on a specified port.
 	 * @param port - The port number to run the battleship server on.
 	 */
 	public BattleShipDriver(int port) {
@@ -26,7 +27,8 @@ public class BattleShipDriver {
 	}
 	
 	/**
-	 * 
+	 * Constructor for BattleShipDriver. Intiailizies a BattleServer on a
+	 * specified port and specified game board size.
 	 * @param port - The port number to run the battleship server on.
 	 * @param size - The size of the game board.
 	 */

@@ -7,39 +7,40 @@ import java.util.Random;
  * It also keeps track of hits and misses on the grid.
  * @author Jeriah Caplinger
  * @author Kevin Filanowski
- * @version 11/9/2018
+ * @version November 2018
  */
 public class Grid {
-    /** Our 2D grid for the player's battleship */
+    /** Our 2D grid for the player's battleship. */
     private char[][] grid;
-    /** Our 2D grid for displaying the player's grid to other players */
+    /** Our 2D grid for displaying the player's grid to other players. */
     private char[][] publicGrid;
-    /** A random number generator for randomly placing ships */
+    /** A random number generator for randomly placing ships. */
     private Random random;
-    /** the size of our grid*/
+    /** The size of our grid. */
     private int sizeOfGrid;
-    /** Keeps track of how many ships have been hit on this grid */
+    /** Keeps track of how many ships have been hit on this grid.*/
     private int numOfHits;
 
     /**
-     * Creates a new Grid and places the ships into the grid
-     * @param sizeOfGrid how big the grid is
+     * Constructor for a game grid.
+     * Creates a new Grid and places ships randomly into the grid.
+     * @param sizeOfGrid How big the grid is.
      */
     public Grid(int sizeOfGrid){
         this.grid = new char[sizeOfGrid][sizeOfGrid];
         this.publicGrid = new char[sizeOfGrid][sizeOfGrid];
         this.random = new Random();
         this.sizeOfGrid = sizeOfGrid;
-        this.initiateGrid();
+        this.initiatePrivateGrid();
         this.initiatePublicGrid();
         this.placeShips();
         this.numOfHits = 0;
     }
 
     /**
-     * Initiates the grid to empty Chars
+     * Initiates the player's personal private grid to empty Chars.
      */
-    private void initiateGrid(){
+    private void initiatePrivateGrid(){
         for(int i = 0; i < sizeOfGrid; i++){
             for(int j = 0; j < sizeOfGrid; j++){
                 grid[i][j] = GridEnum.Blank.getName();
@@ -48,7 +49,7 @@ public class Grid {
     }
 
     /**
-     * Initiates the grid to empty Chars
+     * Initiates the player's public grid to empty Chars.
      */
     private void initiatePublicGrid(){
         for(int i = 0; i < sizeOfGrid; i++){
@@ -58,12 +59,11 @@ public class Grid {
         }
     }
 
-
     /**
-     * Places ships into the grid
+     * Places ships randomly into the grid.
      */
     private void placeShips(){
-        // Calls a helper method that places each ship into the grid
+        // Calls a helper method that places each ship into the grid.
         placeAship(Ship.Carrier.getName(),    Ship.Carrier.size());
         placeAship(Ship.BattleShip.getName(), Ship.BattleShip.size());
         placeAship(Ship.Cruiser.getName(), 	  Ship.Cruiser.size());
@@ -71,26 +71,25 @@ public class Grid {
         placeAship(Ship.Destroyer.getName(),  Ship.Destroyer.size());
     }
 
-
     /**
-     * Places a ship into the grid
-     * @param ship the character that represents the ship
-     * @param sizeOfship how big the ship is
+     * Places a single ship into the grid.
+     * @param ship - The character that represents the ship.
+     * @param sizeOfship - How big the ship is.
      */
     private void placeAship(char ship, int sizeOfship){
         boolean go = true;
-        // tells us how far left and right (or up and down) we can place the ship
+        // Tells us how far left and right (or up and down) we can place the ship.
         int[] place = new int[2];
         int x; int y; int sideOrVert;
         while(go) {
-            // randomly select a point in the grid
+            // Randomly select a point in the grid
             x = random.nextInt(sizeOfGrid);
             y = random.nextInt(sizeOfGrid);
             // 2 because we have to decide if we are placing a ship in a
-            // vertical or horizontal direction
+            // vertical or horizontal direction.
             sideOrVert = random.nextInt(2);
 
-            // i.e. if we are doing horizontal
+            // i.e. If we are doing horizontal
             if(sideOrVert == 0){
                 // calls a helper method to determine if the spot is valid
                 place = isValidHorozSpot(x, y, sizeOfship);
@@ -114,7 +113,7 @@ public class Grid {
     }
 
     /**
-     * helper method that places the ship into the grid in a horizontal fashion
+     * Helper method that places the ship into the grid in a horizontal fashion
      * @param move what moves we can take left and right. with left being move[0] and right move[1]
      * @param x our x coordinate in the grid
      * @param y our y coordinate in the grid
@@ -305,7 +304,6 @@ public class Grid {
             publicGrid[x][y] = GridEnum.Miss.getName();
             grid[x][y] = GridEnum.Miss.getName();
         }
-
         return hit;
     }
 
@@ -317,7 +315,7 @@ public class Grid {
         StringBuilder result = new StringBuilder();
         result.append(" ");
         for (int k = 0; k < sizeOfGrid; k++) {
-        	result.append("   " + k);
+        	result.append(String.format("%4d", k));
         }
         result.append("\n");
         for(int i = 0; i < sizeOfGrid; i++){
@@ -342,7 +340,6 @@ public class Grid {
         return result.toString();
     }
 
-
     /**
      * Converts the player's public grid to a readable string
      * @return a readable string of the player's public grid
@@ -351,17 +348,17 @@ public class Grid {
         StringBuilder result = new StringBuilder();
         result.append(" ");
         for (int k = 0; k < sizeOfGrid; k++) {
-        	result.append("   " + k);
+        	result.append(String.format("%4d", k));
         }
         result.append("\n");
-        for(int i = 0; i < sizeOfGrid; i++){
+        for(int i = 0; i < sizeOfGrid; i++) {
         	result.append("  ");
         	for (int k = 0; k < sizeOfGrid; k++) {
             	result.append("+---");
             }
             result.append("+\n");
             result.append(i + " ");
-            for(int j = 0; j < sizeOfGrid; j++){
+            for(int j = 0; j < sizeOfGrid; j++) {
                 result.append("| ");
                 result.append(publicGrid[i][j]);
                 result.append(" ");
@@ -376,13 +373,11 @@ public class Grid {
         return result.toString();
     }
 
-
-
     // main method that just tests the grid object
     public static void main(String[] args){
         Grid grid1 = new Grid(10);
         // Sizes less than 5 lead to infinite loops. (We can't fit a size 5 ship).
-        //System.out.println(new Grid(4).getPrivateGrid());
+        // System.out.println(new Grid(4).getPrivateGrid());
         System.out.println(new Grid(5).getPrivateGrid());
         System.out.println(new Grid(6).getPrivateGrid());
         System.out.println(new Grid(7).getPrivateGrid());
@@ -434,6 +429,5 @@ public class Grid {
         System.out.println(grid2.getPublicGrid());
         System.out.println("Printing the private grid...");
         System.out.println(grid2.getPrivateGrid());
-        
     }
 }

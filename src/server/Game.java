@@ -3,7 +3,7 @@ package server;
 import java.util.ArrayList;
 
 /**
- * 
+ * The main game logic for BattleShip.
  * @author Kevin Filanowski
  * @author Jeriah Caplinger
  * @version November 2018
@@ -18,13 +18,15 @@ public class Game {
 	
 	/**
 	 * Default constructor for the Game.
+	 * Uses the default grid size.
 	 */
 	public Game() {
 		this(DEFAULT_GRID_SIZE);
 	}
 	
 	/**
-	 * Default constructor for the Game.
+	 * Constructor for the Game.
+	 * Initializes a game board with a specified size.
 	 * @param size - The size of the game.
 	 */
 	public Game(int gridSize) {
@@ -35,15 +37,15 @@ public class Game {
 	/**
 	 * Adds a new player to the game.
 	 */
-	private void addNewPlayer() {
+	public void addPlayer() {
 		gridList.add(new Grid(gridSize));
 	}
 	
 	/**
-	 * Remove a player from the game, if they disconnect or decide to quit.
+	 * Remove a player from the game.
 	 * @param playerNumber - Which player to remove from the game.
 	 */
-	private void removePlayer(int playerNumber) {
+	public void removePlayer(int playerNumber) {
 		gridList.remove(playerNumber);
 	}
 	
@@ -52,7 +54,7 @@ public class Game {
 	 * @param playerNumber - Which player's grid to retrieve.
 	 * @return - A formatted string containing the grid of a specific player.
 	 */
-	private String getPublicGrid(int playerNumber) {
+	public String getPublicGrid(int playerNumber) {
 		return gridList.get(playerNumber).getPublicGrid();
 	}
 	
@@ -61,28 +63,29 @@ public class Game {
 	 * @param playerNumber - Which player's grid to retrieve.
 	 * @return - A formatted string containing the grid of a specific player.
 	 */
-	private String getPrivateGrid(int playerNumber) {
+	public String getPrivateGrid(int playerNumber) {
 		return gridList.get(playerNumber).getPrivateGrid();
 	}
 	
 	/**
-	 * 
+	 * Attempt to shoot to a specific coordinate on a specific player's grid.
 	 * @param x - The x coordinate on the grid.
 	 * @param y - The y coordinate on the grid.
 	 * @return - True if coordinate was a hit, false if it was a miss.
 	 */
-	private Boolean shoot(int playerNumber, int x, int y) {// throws --- {
+	public Boolean shoot(int playerNumber, int x, int y) throws 
+			CoordinateOutOfBoundsException, IllegalCoordinateException {
 		if (x >= gridSize || x < 0) {
-			// Tells the client that these coordinates are not in the grid.
-			//throw new InvalidCoordinatesException(); 
+			// Tells the client that this coordinate was out of bounds.
+			throw new CoordinateOutOfBoundsException(); 
 		}
+		// NOTE: Need to make sure that server handles a valid playerNumber.
 		if (!gridList.get(playerNumber).isValidShot(x, y)) {
 			// Tells the client that this coordinate was already hit.
-			//throw new CoordinateAlreadyHitException(); 
+			throw new IllegalCoordinateException(); 
 		}
 
-		// Return the result.
+		// Return true if coordinate was a hit, false if it was a miss.
 		return gridList.get(playerNumber).shoot(x, y);
 	}
-	
 }

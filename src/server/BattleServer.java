@@ -1,11 +1,12 @@
 package server;
 
-import java.net.ServerSocket;
-
 import common.MessageSource;
+import java.net.ServerSocket;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 /**
- * 
+ * BattleServer processes client requests for the BattleShip Game.
  * @author Kevin Filanowski
  * @author Jeriah Caplinger
  * @version November 2018
@@ -54,7 +55,32 @@ public class BattleServer {
 	 * 
 	 */
 	public void listen() {
+		// TESTING GAMEPLAY, NOT ACTUAL LISTEN METHOD.
+		Scanner in = new Scanner(System.in);
+		int x, y;
+		boolean hit;
+		game.addPlayer();
 		
+		do {
+			System.out.println("Enter coordinates to attack");
+			try {
+				x = in.nextInt();
+				y = in.nextInt();
+				hit = game.shoot(0, x, y);
+				System.out.println("Coordinates were hit?: " + hit);
+				System.out.println(game.getPublicGrid(0));
+			} catch (CoordinateOutOfBoundsException ex) {
+				System.out.println("Coordinates are not on the game board.\n"
+									+ "Please pick another set of coordinates:");
+			} catch (IllegalCoordinateException ex) {
+				System.out.println("Coordinates were already hit.\n"
+									+ "Please pick another set of coordinates:");
+			} catch (InputMismatchException ex) {
+				System.out.println("Please pick valid coordinates.");
+				System.exit(1);
+			}
+		}
+		while (true);
 	}
 	
 	/**
