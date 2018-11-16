@@ -34,7 +34,16 @@ public class Grid {
         this.initiatePrivateGrid();
         this.initiatePublicGrid();
         this.placeShips();
-        this.numOfHits = 0;
+        this.setUpNumHitsNeed();
+    }
+
+    /**
+     * Sets up the total number of hits left on this grid before all ships have been sunk
+     */
+    private void setUpNumHitsNeed(){
+        // gets the sizes of our enum ships and adds them up for a total ship hit count
+        this.numOfHits = Ship.Carrier.size() + Ship.BattleShip.size() + Ship.Cruiser.size()
+                + Ship.Submarine.size() + Ship.Destroyer.size();
     }
 
     /**
@@ -294,17 +303,29 @@ public class Grid {
      * @param y y coordinate of the shot
      * @return true if the shot hit a ship, false if it was a miss
      */
-    protected boolean shoot(int x, int y){
+    protected boolean shoot(int x, int y) throws GameOverException{
         boolean hit = false;
         if(grid[x][y] != GridEnum.Blank.getName()){
             hit = true;
             publicGrid[x][y] = GridEnum.Hit.getName();
             grid[x][y] = GridEnum.Hit.getName();
+            this.shotAShip();
         }else{
             publicGrid[x][y] = GridEnum.Miss.getName();
             grid[x][y] = GridEnum.Miss.getName();
         }
         return hit;
+    }
+
+    /**
+     * detects when there are no more ships to hit and thus causes the game to be over
+     * @throws GameOverException when the game is over
+     */
+    private void shotAShip() throws GameOverException{
+        this.numOfHits--;
+        if(this.numOfHits == 0){
+            throw new GameOverException();
+        }
     }
 
     /**
@@ -392,7 +413,11 @@ public class Grid {
         int xcoord = grid1.random.nextInt(grid1.sizeOfGrid);
         int ycoord = grid1.random.nextInt(grid1.sizeOfGrid);
         System.out.println("Shooting random coordinate x: " + xcoord + ", y: " + ycoord);
-        System.out.println("hit a ship?: " + grid1.shoot(xcoord, ycoord));
+        try {
+            System.out.println("hit a ship?: " + grid1.shoot(xcoord, ycoord));
+        }catch(GameOverException goe){
+            System.out.println("game over!");
+        }
         System.out.println("Printing the public grid...");
         System.out.println(grid1.getPublicGrid());
         System.out.println("Printing the private grid...");
@@ -404,7 +429,11 @@ public class Grid {
         	xcoord = grid1.random.nextInt(grid1.sizeOfGrid);
             ycoord = grid1.random.nextInt(grid1.sizeOfGrid);
             System.out.println("Shooting random coordinate x: " + xcoord + ", y: " + ycoord);
-            System.out.println("hit a ship?: " + grid1.shoot(xcoord, ycoord));
+            try {
+                System.out.println("hit a ship?: " + grid1.shoot(xcoord, ycoord));
+            }catch(GameOverException goe){
+                System.out.println("game over!");
+            }
         }
         System.out.println("Printing the public grid...");
         System.out.println(grid1.getPublicGrid());
@@ -422,7 +451,11 @@ public class Grid {
         System.out.println("Hitting entire grid.");
         for (int i = 0; i < grid2.sizeOfGrid; i++) {
         	for (int j = 0; j < grid2.sizeOfGrid; j++) {
-        		grid2.shoot(i, j);
+        	    try {
+                    grid2.shoot(i, j);
+                }catch(GameOverException goe){
+                    System.out.println("game over!");
+                }
         	}
         }
         System.out.println("Printing the public grid...");

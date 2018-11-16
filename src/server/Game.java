@@ -74,7 +74,7 @@ public class Game {
 	 * @return - True if coordinate was a hit, false if it was a miss.
 	 */
 	public Boolean shoot(int playerNumber, int x, int y) throws 
-			CoordinateOutOfBoundsException, IllegalCoordinateException {
+			CoordinateOutOfBoundsException, IllegalCoordinateException, GameOverException{
 		if (x >= gridSize || x < 0) {
 			// Tells the client that this coordinate was out of bounds.
 			throw new CoordinateOutOfBoundsException(); 
@@ -86,6 +86,7 @@ public class Game {
 		}
 
 		// Return true if coordinate was a hit, false if it was a miss.
+		// if the game is over, then shoot() throws GameOverException
 		return gridList.get(playerNumber).shoot(x, y);
 	}
 }

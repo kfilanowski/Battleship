@@ -30,7 +30,7 @@ public class BattleShipDriver {
 	 * Constructor for BattleShipDriver. Intiailizies a BattleServer on a
 	 * specified port and specified game board size.
 	 * @param port - The port number to run the battleship server on.
-	 * @param size - The size of the game board.
+	 * @param gridSize - The size of the game board.
 	 */
 	public BattleShipDriver(int port, int gridSize) {
 		server = new BattleServer(port, gridSize);
