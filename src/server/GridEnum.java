@@ -7,9 +7,9 @@ package server;
  * @version November 2018
  */
 public enum GridEnum {
-	Hit	  	('@'),
-	Miss  	('X'),
-	Blank	(' ');
+	Hit	  ('@'),
+	Miss  ('X'),
+	Blank (' ');
 
 	/** Holds the grid element symbol. */
 	private final char name;

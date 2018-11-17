@@ -18,7 +18,7 @@ public class Grid {
     private Random random;
     /** The size of our grid. */
     private int sizeOfGrid;
-    /** Keeps track of how many ships have been hit on this grid.*/
+    /** Keeps track of how many ships have been hit on this grid. */
     private int numOfHits;
 
     /**
@@ -40,8 +40,8 @@ public class Grid {
     /**
      * Sets up the total number of hits left on this grid before all ships have been sunk
      */
-    private void setUpNumHitsNeed(){
-        // gets the sizes of our enum ships and adds them up for a total ship hit count
+    private void setUpNumHitsNeed() {
+        // Gets the sizes of our enum ships and adds them up for a total ship hit count.
         this.numOfHits = Ship.Carrier.size() + Ship.BattleShip.size() + Ship.Cruiser.size()
                 + Ship.Submarine.size() + Ship.Destroyer.size();
     }
@@ -91,7 +91,7 @@ public class Grid {
         int[] place = new int[2];
         int x; int y; int sideOrVert;
         while(go) {
-            // Randomly select a point in the grid
+            // Randomly select a point in the grid.
             x = random.nextInt(sizeOfGrid);
             y = random.nextInt(sizeOfGrid);
             // 2 because we have to decide if we are placing a ship in a
@@ -100,21 +100,21 @@ public class Grid {
 
             // i.e. If we are doing horizontal
             if(sideOrVert == 0){
-                // calls a helper method to determine if the spot is valid
+                // Calls a helper method to determine if the spot is valid.
                 place = isValidHorozSpot(x, y, sizeOfship);
-                // isValidHorozSpot returns -1 in the first index spot if it is not valid
+                // isValidHorozSpot returns -1 in the first index spot if it is not valid.
                 if(place[0] != -1){
                     go = false;
-                    // helper method that places the ship into the grid
+                    // Helper method that places the ship into the grid.
                     helpPlaceShipHorz(place, x, y, ship);
                 }
             }else{
-                // calls a helper method to determine if the spot is valid
+                // Calls a helper method to determine if the spot is valid.
                 place = isValidVertSpot(x,y, sizeOfship);
-                // isValidVertSpot returns -1 in the first index spot if it is not valid
+                // isValidVertSpot returns -1 in the first index spot if it is not valid.
                 if(place[0] != -1){
                     go = false;
-                    // helper method that places the ship into the grid
+                    // Helper method that places the ship into the grid.
                     helpPlaceShipVert(place, x, y, ship);
                 }
             }
@@ -122,15 +122,15 @@ public class Grid {
     }
 
     /**
-     * Helper method that places the ship into the grid in a horizontal fashion
+     * Helper method that places the ship into the grid in a horizontal fashion.
      * @param move what moves we can take left and right. with left being move[0] and right move[1]
      * @param x our x coordinate in the grid
      * @param y our y coordinate in the grid
      * @param ship our character representing the ship
      */
     private void helpPlaceShipHorz(int[] move, int x, int y, char ship){
-        // we just put the chars in the grid according to the moves we are allowing
-        // int the horizontal directions
+        // We just put the chars in the grid according to the moves we are allowing
+        // in the horizontal directions.
         grid[x][y] = ship;
         for(int i = 1; i < move[0]; i++){
             grid[x][y - i] = ship;
@@ -142,15 +142,16 @@ public class Grid {
     }
 
     /**
-     * helper method that places the ship into the grid in a vertical fashion
-     * @param move what moves we can take left and right. with left being move[0] and right move[1]
-     * @param x our x coordinate in the grid
-     * @param y our y coordinate in the grid
-     * @param ship our character representing the ship
+     * Helper method that places the ship into the grid in a vertical fashion.
+     * @param move What moves we can take left and right. With left being move[0] 
+     * and right being move[1].
+     * @param x - Our x coordinate in the grid.
+     * @param y - Our y coordinate in the grid.
+     * @param ship - Our character representing the ship.
      */
     private void helpPlaceShipVert(int[] move, int x, int y, char ship){
         // we just put the chars in the grid according to the moves we are allowing
-        // int the vertical directions
+        // in the vertical directions.
         grid[x][y] = ship;
         for(int i = 1; i < move[0]; i++){
             grid[x - i][y] = ship;
@@ -163,29 +164,29 @@ public class Grid {
 
     /**
      * Determines if the randomly selected spot we chose will be valid for the ship
-     * @param x our x coordinate that we randomly chose
-     * @param y our y coordinate that we randomly chose
-     * @param shipSize how big our ship is
-     * @return an int array of size 2 representing how far we can go down(int[0]) and up(int[1])
-     *          int[0] = -1 if the spot is not valid
+     * @param x - Our x coordinate that we randomly chose
+     * @param y - Our y coordinate that we randomly chose
+     * @param shipSize How big our ship is.
+     * @return - an int array of size 2 representing how far we can go down(int[0]) and up(int[1])
+     * NOTE: int[0] = -1 if the spot is not valid.
      */
     private int[] isValidVertSpot(int x, int y, int shipSize){
         int[] result = new int[2];
         boolean go = true;
         int i = 0;
-        // we determine how far we can go down the grid
+        // We determine how far we can go down the grid.
         while(shipSize > 0 && go){
-            // check array bounds
+            // Check array bounds.
             if(x - i >= 0) {
-                // if it is a valid spot to place
+                // If it is a valid spot to place.
                 if (grid[x - i][y] == GridEnum.Blank.getName()) {
                     i++;
-                    // we decrement ship size meaning we can place a ship there
+                    // We decrement ship size meaning we can place a ship there.
                     shipSize--;
                 } else {
                     go = false;
                 }
-            }else{
+            } else {
                 go = false;
             }
         }
@@ -195,14 +196,14 @@ public class Grid {
         if (i > 0) {
         	j = 1;
         }
-        // we determine how far we can go up the grid
+        // We determine how far we can go up the grid.
         while(shipSize > 0 && go){
-            // check array bounds
+            // Check array bounds.
             if(x + j < sizeOfGrid) {
-                // if it is a valid spot to place
+                // If it is a valid spot to place.
                 if (grid[x + j][y] == GridEnum.Blank.getName()) {
                     j++;
-                    // we decrement ship size meaning we can place a ship there
+                    // We decrement ship size meaning we can place a ship there.
                     shipSize--;
                 } else {
                     go = false;
@@ -211,7 +212,7 @@ public class Grid {
                 go = false;
             }
         }
-        // shipSize equals 0 if we can place the ship in this random spot
+        // ShipSize equals 0 if we can place the ship in this random spot.
         if(shipSize == 0){
             result[0] = i;
             result[1] = j;
@@ -222,25 +223,25 @@ public class Grid {
     }
 
     /**
-     * Determines if the randomly selected spot we chose will be valid for the ship
-     * @param x our x coordinate that we randomly chose
-     * @param y our y coordinate that we randomly chose
-     * @param shipSize how big our ship is
+     * Determines if the randomly selected spot we chose will be valid for the ship.
+     * @param x - Our x coordinate that we randomly chose.
+     * @param y - Our y coordinate that we randomly chose.
+     * @param shipSize How big our ship is.
      * @return an int array of size 2 representing how far we can go left(int[0]) and right(int[1])
-     *          int[0] = -1 if the spot is not valid
+     * NOTE: int[0] = -1 if the spot is not valid.
      */
     private int[] isValidHorozSpot(int x, int y, int shipSize) {
         int[] result = new int[2];
         boolean go = true;
         int i = 0;
-        // we determine how far we can go left on the grid
+        // We determine how far we can go left on the grid.
         while(shipSize > 0 && go) {
-            // bound check
+            // Bound check.
             if (y - i >= 0) {
-                // if it is a valid spot to place
+                // If it is a valid spot to place.
                 if (grid[x][y - i] == GridEnum.Blank.getName()) {
                     i++;
-                    // we decrement ship size meaning we can place a ship there
+                    // We decrement ship size meaning we can place a ship there.
                     shipSize--;
                 } else {
                     go = false;
@@ -254,14 +255,14 @@ public class Grid {
         if (i > 0) {
         	j = 1;
         }
-        // we determine how far right we can go on the grid
+        // We determine how far right we can go on the grid.
         while(shipSize > 0 && go) {
-        	// bound check
+        	// Bound check.
         	if(y + j < sizeOfGrid) {
-        		// if it is a valid spot to place
+        		// If it is a valid spot to place.
         		if (grid[x][y + j] == GridEnum.Blank.getName()) {
         			j++;
-        			// we decrement ship size meaning we can place a ship there
+        			// We decrement ship size meaning we can place a ship there.
         			shipSize--;
         		} else {
         			go = false;
@@ -270,7 +271,7 @@ public class Grid {
                 go = false;
             }
         }
-        // shipSize equals 0 if we can place the ship in this random spot
+        // shipSize equals 0 if we can place the ship in this random spot.
         if(shipSize == 0){
             result[0] = i;
             result[1] = j;
@@ -280,30 +281,29 @@ public class Grid {
         return result;
     }
 
-
     /**
-     *  Determines if the player can shoot at the specific point in the grid
-     * @param x x coordinate of shot
-     * @param y y coordinate of shot
-     * @return true if the shot was successfully launched either hit or miss
-     *          false if the spot to shoot at has already been shot at
+     * Determines if the player can shoot at the specific point in the grid.
+     * @param x - x coordinate of the shot.
+     * @param y - y coordinate of the shot.
+     * @return - true if the shot can be taken.
+     * false if the spot to shoot at has already been shot at.
      */
-    protected boolean isValidShot(int x, int y){
+    protected boolean isValidShot(int x, int y) {
         boolean result = false;
         if(grid[x][y] != GridEnum.Miss.getName() && 
-        		grid[x][y] != GridEnum.Hit.getName()){
+        		grid[x][y] != GridEnum.Hit.getName()) {
             result = true;
         }
         return result;
     }
 
     /**
-     * Shoots the player's shot at the specific point in the grid
-     * @param x x coordinate of the shot
-     * @param y y coordinate of the shot
-     * @return true if the shot hit a ship, false if it was a miss
+     * Shoots the player's shot at the specific point in the grid.
+     * @param x - x coordinate of the shot.
+     * @param y - y coordinate of the shot.
+     * @return true if the shot hit a ship, false if it was a miss.
      */
-    protected boolean shoot(int x, int y) throws GameOverException{
+    protected boolean shoot(int x, int y) throws GameOverException {
         boolean hit = false;
         if(grid[x][y] != GridEnum.Blank.getName()){
             hit = true;
@@ -318,21 +318,21 @@ public class Grid {
     }
 
     /**
-     * detects when there are no more ships to hit and thus causes the game to be over
-     * @throws GameOverException when the game is over
+     * Detects when there are no more ships to hit and thus causes the game to be over.
+     * @throws GameOverException - Thrown when the game is over.
      */
-    private void shotAShip() throws GameOverException{
+    private void shotAShip() throws GameOverException {
         this.numOfHits--;
-        if(this.numOfHits == 0){
+        if(this.numOfHits == 0) {
             throw new GameOverException();
         }
     }
 
     /**
-     * Converts the player's private grid to a readable string
-     * @return a readable string of the player's private grid
+     * Converts the player's private grid to a readable string.
+     * @return - A readable string of the player's private grid.
      */
-    public String getPrivateGrid() {        
+    protected String getPrivateGrid() {        
         StringBuilder result = new StringBuilder();
         result.append(" ");
         for (int k = 0; k < sizeOfGrid; k++) {
@@ -362,10 +362,10 @@ public class Grid {
     }
 
     /**
-     * Converts the player's public grid to a readable string
-     * @return a readable string of the player's public grid
+     * Converts the player's public grid to a readable string.
+     * @return - A readable string of the player's public grid.
      */
-    public String getPublicGrid(){
+    protected String getPublicGrid(){
         StringBuilder result = new StringBuilder();
         result.append(" ");
         for (int k = 0; k < sizeOfGrid; k++) {
@@ -394,9 +394,10 @@ public class Grid {
         return result.toString();
     }
 
-    // main method that just tests the grid object
+    // Main method that just tests the grid object
     public static void main(String[] args){
         Grid grid1 = new Grid(10);
+
         // Sizes less than 5 lead to infinite loops. (We can't fit a size 5 ship).
         // System.out.println(new Grid(4).getPrivateGrid());
         System.out.println(new Grid(5).getPrivateGrid());

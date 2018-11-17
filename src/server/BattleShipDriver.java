@@ -9,7 +9,7 @@ package server;
 public class BattleShipDriver {
 	/** The server running the game logic for battleship. **/
 	BattleServer server;
-	
+
 	/**
 	 * Default constructor for default parameters in BattleServer.
 	 */
@@ -71,6 +71,8 @@ public class BattleShipDriver {
 			}
 			// Listen for requests
 			driver.listen();
+			// Test gameplay.                 // ******DEBUGGING*******/
+			driver.server.testGameplay();     // ******DEBUGGING*******/
 		} catch (NumberFormatException ex) {
 			PrintUsageAndExit();
 		}
