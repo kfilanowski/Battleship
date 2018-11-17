@@ -15,17 +15,17 @@ public enum Ship {
 	Destroyer	('D', 2);
 
 	/** Symbol for the ship. **/
-	private final char name;
+	private final char symbol;
 	/** Size of the ship. **/
 	private final int size;
 
 	/**
 	 * Private Constructor for the ship.
-	 * @param name - Symbol for the ship.
-	 * @param size - Size of the ship.
+	 * @param symbol - Symbol for the ship.
+	 * @param size   - Size of the ship.
 	 */
-	private Ship(char name, int size) {
-		this.name = name;
+	private Ship(char symbol, int size) {
+		this.symbol = symbol;
 		this.size = size;
 	}
 
@@ -33,8 +33,8 @@ public enum Ship {
 	 * Retrieves the symbol of the ship. 
 	 * @return The symbol of the specified ship.
 	 */
-	protected final char getName() {
-		return name;
+	protected final char getSymbol() {
+		return symbol;
 	}
 
 	/**
