@@ -88,7 +88,7 @@ public class BattleServer {
 		String options = "";
 		int x, y;
 		boolean hit;
-		game.addPlayer();
+		game.addPlayer("username test");
 
 		do {
 			System.out.println("Enter coordinates to attack");
@@ -106,9 +106,9 @@ public class BattleServer {
 				// ************* end user options for demonstration purposes
 				// x = in.nextInt();
 				y = in.nextInt();
-				hit = game.shoot(0, x, y);
+				hit = game.shoot("username test", x, y);
 				System.out.println("Coordinates were hit?: " + hit);
-				System.out.println(game.getPublicGrid(0));
+				System.out.println(game.getPublicGrid("username test"));
 			} catch (CoordinateOutOfBoundsException ex) {
 				System.out.println(
 						"Coordinates are not on the game board.\n" + "Please pick another set of coordinates:");
@@ -136,9 +136,9 @@ public class BattleServer {
 					"\n'q' to quit the options screen\n'Q!' to quit the game.");
 			result = in.next();
 			if(result.toLowerCase().equals("pub")){
-				System.out.println(this.game.getPublicGrid(0));
+				System.out.println(this.game.getPublicGrid("username test"));
 			}else if(result.toLowerCase().equals("pri")){
-				System.out.println(game.getPrivateGrid(0));
+				System.out.println(game.getPrivateGrid("username test"));
 			}else if(result.toLowerCase().equals("q")){
 				go = false;
 			}else if(result.toLowerCase().equals("q!")){

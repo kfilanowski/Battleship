@@ -56,7 +56,7 @@ public class Game {
 	 * @return - A formatted string containing the grid of a specific player.
 	 */
 	public String getPublicGrid(String username) {
-		return gridList.get(playerNumber).getPublicGrid();
+		return gridList.get(username).getPublicGrid();
 	}
 	
 	/**
@@ -64,8 +64,8 @@ public class Game {
 	 * @param playerNumber - Which player's grid to retrieve.
 	 * @return - A formatted string containing the grid of a specific player.
 	 */
-	public String getPrivateGrid(int playerNumber) {
-		return gridList.get(playerNumber).getPrivateGrid();
+	public String getPrivateGrid(String username) {
+		return gridList.get(username).getPrivateGrid();
 	}
 	
 	/**
@@ -79,20 +79,20 @@ public class Game {
 	 * coordinate that has already been attacked. 
 	 * @throws GameOverException - Thrown when the game ends by sinking all ships.
 	 */
-	public Boolean shoot(int playerNumber, int x, int y) throws 
+	public Boolean shoot(String username, int x, int y) throws 
 			CoordinateOutOfBoundsException, IllegalCoordinateException, GameOverException {
 		if (x >= gridSize || x < 0) {
 			// Tells the client that this coordinate was out of bounds.
 			throw new CoordinateOutOfBoundsException(); 
 		}
-		// NOTE: Need to make sure that server handles a valid playerNumber.
-		if (!gridList.get(playerNumber).isValidShot(x, y)) {
+		// NOTE: Need to make sure that server handles a valid username.
+		if (!gridList.get(username).isValidShot(x, y)) {
 			// Tells the client that this coordinate was already hit.
 			throw new IllegalCoordinateException(); 
 		}
 
 		// Return true if coordinate was a hit, false if it was a miss.
 		// if the game is over, then shoot() throws GameOverException
-		return gridList.get(playerNumber).shoot(x, y);
+		return gridList.get(username).shoot(x, y);
 	}
 }

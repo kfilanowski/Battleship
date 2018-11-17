@@ -2,11 +2,9 @@ package client;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
 import common.MessageSource;
 
 /**
- * 
  * @author Kevin Filanowski
  * @author Jeriah Caplinger
  * @version November 2018

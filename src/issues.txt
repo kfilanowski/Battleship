@@ -1,0 +1,15 @@
+Potential issues we will need to check for, for the sake of robustness:
+usernames are valid when players /attack them, or /show them.
+users cannot /attack and other certain commands before game starts
+check if at least two players exist to play the game.
+if the player requests their own grid, it is the private one. (Although I don't see why we can't choose public/private)
+
+
+
+Questions:
+max number of players?
+max grid size?
+
+
+
+Continue: Will continue to work on output. Currently does not output the correct grid if numbers are > 9.

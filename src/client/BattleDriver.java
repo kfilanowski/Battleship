@@ -53,6 +53,5 @@ public class BattleDriver {
 			System.out.println(ex.getMessage());
 			printUsageAndExit();
 		}
-
 	}
 }

@@ -336,7 +336,7 @@ public class Grid {
         StringBuilder result = new StringBuilder();
         result.append(" ");
         for (int k = 0; k < sizeOfGrid; k++) {
-        	result.append(String.format("%4d", k));
+        	result.append(String.format("%-4d", k));
         }
         result.append("\n");
         for(int i = 0; i < sizeOfGrid; i++){
