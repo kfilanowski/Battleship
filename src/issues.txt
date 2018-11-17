@@ -9,7 +9,3 @@ if the player requests their own grid, it is the private one. (Although I don't 
 Questions:
 max number of players?
 max grid size?
-
-
-
-Continue: Will continue to work on output. Currently does not output the correct grid if numbers are > 9.
