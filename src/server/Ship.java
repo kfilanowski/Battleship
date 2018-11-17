@@ -9,7 +9,7 @@ package server;
  */
 public enum Ship {
 	Carrier		('C', 5),
-	BattleShip	('B', 4),
+	BattleShip  ('B', 4),
 	Cruiser		('R', 3),
 	Submarine	('S', 3),
 	Destroyer	('D', 2);

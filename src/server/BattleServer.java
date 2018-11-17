@@ -1,8 +1,6 @@
 package server;
 
 import common.MessageSource;
-
-import java.awt.*;
 import java.net.ServerSocket;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -16,6 +14,10 @@ import java.util.Scanner;
 public class BattleServer {
 	/** The default port for the server. */
 	private static final int DEFAULT_PORT = 8674;
+	/** The maximum grid size for the grid. */
+	private static final int MAX_GRID_SIZE = 100;
+	/** The minimum grid size for the grid. */
+	private static final int MIN_GRID_SIZE = 5;
 	/** The port for the battle server. */
 	private int port;
 	/** The server socket. */
@@ -50,56 +52,77 @@ public class BattleServer {
 	 */
 	public BattleServer(int port, int gridSize) {
 		this.port = port;
-		game = new Game(gridSize);
+		game = new Game(clamp(gridSize));
+	}
+
+	/**
+	 * Clamps the gridSize between the minimum and maximum value. This serves two
+	 * purposes: 1) Forces the grid to be larger than a ship, since it would be not
+	 * be possible to place a ship of size 5 into a grid of size 4. 2) Forces the
+	 * grid to be within reasonable size to prevent out of memory erorrs by creating
+	 * a gridsize too large.
+	 * @param gridSize - The gridSize specified by the command line args.
+	 * @return - The gridSize, clamped between the minimum and maximum value. If
+	 *         MIN_GRID_SIZE <= gridSize <= MAX_GRID_SIZE, then gridSize does not
+	 *         change.
+	 */
+	private final int clamp(int gridSize) {
+		if (gridSize < MIN_GRID_SIZE) {
+			gridSize = MIN_GRID_SIZE;
+		} else if (gridSize > MAX_GRID_SIZE) {
+			gridSize = MAX_GRID_SIZE;
+		}
+		return gridSize;
 	}
 	
 	/**
 	 * 
 	 */
 	public void listen() {
-		// TESTING GAMEPLAY, NOT ACTUAL LISTEN METHOD.
+		
+	}
+
+	// TESTS GAMEPLAY. Delete this later.
+	public void testGameplay() {
 		Scanner in = new Scanner(System.in);
 		String options = "";
 		int x, y;
 		boolean hit;
 		game.addPlayer();
-		
+
 		do {
 			System.out.println("Enter coordinates to attack");
 			// ************ gives user options for demonstration purposes
 			System.out.println("Or enter 'x' for more options");
 			try {
 				options = in.next();
-				if(options.toLowerCase().equals("x")){
+				if (options.toLowerCase().equals("x")) {
 					this.options(in);
 					System.out.println("Enter coordinates to attack");
 					x = in.nextInt();
-				}else{
+				} else {
 					x = Integer.parseInt(options);
 				}
-				//************* end user options for demonstration purposes
-				//x = in.nextInt();
+				// ************* end user options for demonstration purposes
+				// x = in.nextInt();
 				y = in.nextInt();
 				hit = game.shoot(0, x, y);
 				System.out.println("Coordinates were hit?: " + hit);
 				System.out.println(game.getPublicGrid(0));
 			} catch (CoordinateOutOfBoundsException ex) {
-				System.out.println("Coordinates are not on the game board.\n"
-									+ "Please pick another set of coordinates:");
+				System.out.println(
+						"Coordinates are not on the game board.\n" + "Please pick another set of coordinates:");
 			} catch (IllegalCoordinateException ex) {
-				System.out.println("Coordinates were already hit.\n"
-									+ "Please pick another set of coordinates:");
+				System.out.println("Coordinates were already hit.\n" + "Please pick another set of coordinates:");
 			} catch (InputMismatchException ex) {
 				System.out.println("Please pick valid coordinates.");
 				System.exit(1);
-			}catch(GameOverException goe){
+			} catch (GameOverException goe) {
 				System.out.println("GAME OVER! All ships have been SUNK! Good game!");
 				System.exit(1);
 			}
-		}
-		while (true);
+		} while (true);
 	}
-
 
 	/**
 	 * Gives the user options for demonstration purposes

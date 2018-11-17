@@ -1,6 +1,6 @@
 package server;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * The main game logic for BattleShip.
@@ -9,8 +9,8 @@ import java.util.ArrayList;
  * @version November 2018
  */
 public class Game {
-	/** Holds the grids for the game. Player 0 will be grid at index 0, etc. */
-	ArrayList<Grid> gridList;
+	/** Holds the grids for each player. */
+	HashMap<String, Grid> gridList;
 	/** The default size of the grid for the game. */
 	private static final int DEFAULT_GRID_SIZE = 10;
 	/** The size of the grid for the game. */
@@ -30,31 +30,32 @@ public class Game {
 	 * @param size - The size of the game.
 	 */
 	public Game(int gridSize) {
-		gridList = new ArrayList<Grid>();
+		gridList = new HashMap<String, Grid>();
 		this.gridSize = gridSize;
 	}
 	
 	/**
 	 * Adds a new player to the game.
+	 * @param username - The player's username to be used in the game.
 	 */
-	public void addPlayer() {
-		gridList.add(new Grid(gridSize));
+	public void addPlayer(String username) {
+		gridList.put(username, new Grid(gridSize));
 	}
 	
 	/**
 	 * Remove a player from the game.
-	 * @param playerNumber - Which player to remove from the game.
+	 * @param username - The username of the player to remove from the game.
 	 */
-	public void removePlayer(int playerNumber) {
-		gridList.remove(playerNumber);
+	public void removePlayer(String username) {
+		gridList.remove(username);
 	}
 	
 	/**
 	 * Returns the public formatted grid of a specific player.
-	 * @param playerNumber - Which player's grid to retrieve.
+	 * @param username - Which player's grid to retrieve by using their username.
 	 * @return - A formatted string containing the grid of a specific player.
 	 */
-	public String getPublicGrid(int playerNumber) {
+	public String getPublicGrid(String username) {
 		return gridList.get(playerNumber).getPublicGrid();
 	}
 	
@@ -72,9 +73,14 @@ public class Game {
 	 * @param x - The x coordinate on the grid.
 	 * @param y - The y coordinate on the grid.
 	 * @return - True if coordinate was a hit, false if it was a miss.
+	 * @throws CoordinateOutOfBoundsException - Thrown when the player chooses a
+	 * coordinate that is not within the size of the grid.
+	 * @throws IllegalCoordinateException - Thown when the player chooses a
+	 * coordinate that has already been attacked. 
+	 * @throws GameOverException - Thrown when the game ends by sinking all ships.
 	 */
 	public Boolean shoot(int playerNumber, int x, int y) throws 
-			CoordinateOutOfBoundsException, IllegalCoordinateException, GameOverException{
+			CoordinateOutOfBoundsException, IllegalCoordinateException, GameOverException {
 		if (x >= gridSize || x < 0) {
 			// Tells the client that this coordinate was out of bounds.
 			throw new CoordinateOutOfBoundsException(); 
