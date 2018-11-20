@@ -4,7 +4,7 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class ConnectionAgent {
+public class ConnectionAgent implements Runnable {
 	/**  **/
 	private Socket socket;
 	/**  **/

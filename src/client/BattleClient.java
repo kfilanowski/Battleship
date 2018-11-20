@@ -2,6 +2,8 @@ package client;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+
+import common.MessageListener;
 import common.MessageSource;
 
 /**
@@ -9,7 +11,7 @@ import common.MessageSource;
  * @author Jeriah Caplinger
  * @version November 2018
  */
-public class BattleClient {
+public class BattleClient implements MessageListener {
 	/** The address of the server to connect to. */
 	private InetAddress host;
 	/** The port number to connect to. */
