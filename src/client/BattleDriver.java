@@ -46,7 +46,7 @@ public class BattleDriver {
 			BattleDriver driver = new BattleDriver(
 					InetAddress.getByName(args[0]),
 					Integer.parseInt(args[1]), args[2]);
-			
+		driver.client.connect();
 		} catch (NumberFormatException ex) {
 			printUsageAndExit();
 		} catch (UnknownHostException ex) {

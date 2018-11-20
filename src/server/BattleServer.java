@@ -85,8 +85,8 @@ public class BattleServer implements MessageListener {
 	 * 
 	 */
 	public void listen() {
-		while (serverSocket.isClosed()) {
-
+		while (!serverSocket.isClosed()) {
+			
 		}
 	}
 

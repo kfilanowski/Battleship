@@ -1,8 +1,11 @@
 package client;
 
+import java.util.Scanner;
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.UnknownHostException;
-
+import common.ConnectionAgent;
 import common.MessageListener;
 import common.MessageSource;
 
@@ -18,6 +21,8 @@ public class BattleClient extends MessageSource implements MessageListener {
 	private int port;
 	/** The username of the client. */
 	private String username;
+	/** Connection agent to communicate with the server. */
+	private ConnectionAgent agent;
 	
 	/**
 	 * Constructor for a client in the BattleShip game.
@@ -28,10 +33,11 @@ public class BattleClient extends MessageSource implements MessageListener {
 	 * found on the specified host name.
 	 */
 	public BattleClient(String host, int port, String username)
-			throws UnknownHostException {
+			throws UnknownHostException, IOException {
 		this.host = InetAddress.getByName(host);
 		this.port = port;
 		this.username = username;
+		agent = new ConnectionAgent(new Socket(this.host, port));
 	}
 	
 	/**
@@ -40,14 +46,21 @@ public class BattleClient extends MessageSource implements MessageListener {
 	 * @param port - The port number to connect on the server.
 	 * @param username - The username of the player.
 	 */
-	public BattleClient(InetAddress host, int port, String username) {
+	public BattleClient(InetAddress host, int port, String username) 
+								throws IOException {
 		this.host = host;
 		this.port = port;
 		this.username = username;
+		agent = new ConnectionAgent(new Socket(host, port));
 	}
 	
 	public void connect() {
+		send("/join " + username);
+		Scanner in = new Scanner(System.in);
+		System.out.println("Looking for input in BattleClient connect()");
 		
+
+
 	}
 	
 	public void messageReceived(String message, MessageSource source) {
@@ -59,6 +72,6 @@ public class BattleClient extends MessageSource implements MessageListener {
 	}
 	
 	public void send(String message) {
-		
+		agent.sendMessage(message);
 	}
 }
