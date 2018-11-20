@@ -11,7 +11,7 @@ import common.MessageSource;
  * @author Jeriah Caplinger
  * @version November 2018
  */
-public class BattleClient implements MessageListener {
+public class BattleClient extends MessageSource implements MessageListener {
 	/** The address of the server to connect to. */
 	private InetAddress host;
 	/** The port number to connect to. */

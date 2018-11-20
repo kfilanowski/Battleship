@@ -1,6 +1,8 @@
 package server;
 
+import common.MessageListener;
 import common.MessageSource;
+import common.ConnectionAgent;
 import java.net.ServerSocket;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -11,7 +13,7 @@ import java.util.Scanner;
  * @author Jeriah Caplinger
  * @version November 2018
  */
-public class BattleServer {
+public class BattleServer implements MessageListener {
 	/** The default port for the server. */
 	private static final int DEFAULT_PORT = 8674;
 	/** The maximum grid size for the grid. */
@@ -26,6 +28,8 @@ public class BattleServer {
 	private int current;
 	/** Game class for game logic. */
 	Game game;
+	/** TODO */
+	ConnectionAgent agent;
 	
 	/**
 	 * Default Constructor for BattleServer.
@@ -43,6 +47,7 @@ public class BattleServer {
 	public BattleServer(int port) {
 		this.port = port;
 		game = new Game();
+		agent = new ConnectionAgent();
 	}
 	
 	/**
@@ -53,6 +58,7 @@ public class BattleServer {
 	public BattleServer(int port, int gridSize) {
 		this.port = port;
 		game = new Game(clamp(gridSize));
+		agent = new ConnectionAgent();
 	}
 
 	/**
@@ -79,7 +85,9 @@ public class BattleServer {
 	 * 
 	 */
 	public void listen() {
-		
+		while (serverSocket.isClosed()) {
+
+		}
 	}
 
 	// TESTS GAMEPLAY. Delete this later.
@@ -156,7 +164,7 @@ public class BattleServer {
 	 * @param message
 	 */
 	public void broadcast(String message) {
-		
+		agent.sendMessage(message);
 	}
 	
 	/**
