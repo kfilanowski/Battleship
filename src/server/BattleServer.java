@@ -3,9 +3,12 @@ package server;
 import common.MessageListener;
 import common.MessageSource;
 import common.ConnectionAgent;
+
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.HashMap;
 
 /**
  * BattleServer processes client requests for the BattleShip Game.
@@ -28,14 +31,14 @@ public class BattleServer implements MessageListener {
 	private int current;
 	/** Game class for game logic. */
 	Game game;
-	/** TODO */
-	ConnectionAgent agent;
+	/** A map of connection agents. */
+	HashMap<String, ConnectionAgent> agents;
 	
 	/**
 	 * Default Constructor for BattleServer.
 	 * Uses the default port and size.
 	 */
-	public BattleServer() {
+	public BattleServer() throws IOException {
 		this(DEFAULT_PORT);
 	}
 	
@@ -44,10 +47,11 @@ public class BattleServer implements MessageListener {
 	 * Uses the default size.
 	 * @param port - The port number to run the battleship server on.
 	 */
-	public BattleServer(int port) {
+	public BattleServer(int port) throws IOException {
 		this.port = port;
 		game = new Game();
-		agent = new ConnectionAgent();
+		agents = new HashMap<String, ConnectionAgent>();
+		serverSocket = new ServerSocket(port);
 	}
 	
 	/**
@@ -55,10 +59,11 @@ public class BattleServer implements MessageListener {
 	 * @param port - The port number to run the battleship server on.
 	 * @param gridSize - The size of the game board.
 	 */
-	public BattleServer(int port, int gridSize) {
+	public BattleServer(int port, int gridSize) throws IOException {
 		this.port = port;
 		game = new Game(clamp(gridSize));
-		agent = new ConnectionAgent();
+		agents = new HashMap<String, ConnectionAgent>();
+		serverSocket = new ServerSocket(port);
 	}
 
 	/**
@@ -85,6 +90,7 @@ public class BattleServer implements MessageListener {
 	 * 
 	 */
 	public void listen() {
+		//server socket accepts? or accepts a certain conection agent..
 		while (!serverSocket.isClosed()) {
 			
 		}

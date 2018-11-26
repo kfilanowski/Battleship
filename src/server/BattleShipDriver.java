@@ -1,5 +1,8 @@
 package server;
 
+import java.io.IOError;
+import java.io.IOException;
+
 /**
  * Initializes a BattleServer for the BattleShip Game.
  * @author Kevin Filanowski
@@ -13,7 +16,7 @@ public class BattleShipDriver {
 	/**
 	 * Default constructor for default parameters in BattleServer.
 	 */
-	public BattleShipDriver() {
+	public BattleShipDriver() throws IOException {
 		server = new BattleServer();
 	}
 	
@@ -22,7 +25,7 @@ public class BattleShipDriver {
 	 * on a specified port.
 	 * @param port - The port number to run the battleship server on.
 	 */
-	public BattleShipDriver(int port) {
+	public BattleShipDriver(int port) throws IOException {
 		server = new BattleServer(port);
 	}
 	
@@ -32,7 +35,7 @@ public class BattleShipDriver {
 	 * @param port - The port number to run the battleship server on.
 	 * @param gridSize - The size of the game board.
 	 */
-	public BattleShipDriver(int port, int gridSize) {
+	public BattleShipDriver(int port, int gridSize) throws IOException {
 		server = new BattleServer(port, gridSize);
 	}
 	
@@ -74,6 +77,9 @@ public class BattleShipDriver {
 			// Test gameplay.                 // ******DEBUGGING*******/
 			driver.server.testGameplay();     // ******DEBUGGING*******/
 		} catch (NumberFormatException ex) {
+			PrintUsageAndExit();
+		} catch (IOException ex) {
+			System.out.println(ex.getMessage());
 			PrintUsageAndExit();
 		}
 	}

@@ -1,5 +1,6 @@
 package client;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -21,7 +22,7 @@ public class BattleDriver {
 	 * resolve to an IP Address.
 	 */
 	public BattleDriver(InetAddress host, int port, String username)
-			throws UnknownHostException {
+			throws UnknownHostException, IOException {
 		client = new BattleClient(host, port, username);
 	}
 
@@ -50,6 +51,9 @@ public class BattleDriver {
 		} catch (NumberFormatException ex) {
 			printUsageAndExit();
 		} catch (UnknownHostException ex) {
+			System.out.println(ex.getMessage());
+			printUsageAndExit();
+		} catch (IOException ex) {
 			System.out.println(ex.getMessage());
 			printUsageAndExit();
 		}
