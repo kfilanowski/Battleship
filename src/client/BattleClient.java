@@ -38,6 +38,7 @@ public class BattleClient extends MessageSource implements MessageListener {
 		this.port = port;
 		this.username = username;
 		agent = new ConnectionAgent(new Socket(this.host, port));
+		super.addMessageListener((MessageListener) agent);
 	}
 	
 	/**
@@ -51,7 +52,9 @@ public class BattleClient extends MessageSource implements MessageListener {
 		this.host = host;
 		this.port = port;
 		this.username = username;
-		agent = new ConnectionAgent(new Socket(host, port));
+		// lets the client's connection agent add the client to the agent's list
+		// of message listeners to notify and other methods
+		agent.addMessageListener(this);
 	}
 	
 	public void connect() {
