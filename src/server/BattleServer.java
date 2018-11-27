@@ -6,6 +6,8 @@ import common.ConnectionAgent;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.HashMap;
@@ -90,9 +92,18 @@ public class BattleServer implements MessageListener {
 	 * 
 	 */
 	public void listen() {
+		boolean go = false;
 		//server socket accepts? or accepts a certain conection agent..
+
 		while (!serverSocket.isClosed()) {
-			
+			while(!go)
+			try {
+				Socket sock = serverSocket.accept();
+
+			}catch (IOException ioe){
+				System.out.println(ioe.getMessage());
+			}
+			go = isGameStarted?
 		}
 	}
 
@@ -170,7 +181,7 @@ public class BattleServer implements MessageListener {
 	 * @param message
 	 */
 	public void broadcast(String message) {
-		agent.sendMessage(message);
+		//agent.sendMessage(message);
 	}
 	
 	/**
