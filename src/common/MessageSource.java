@@ -15,7 +15,7 @@ import java.util.List;
  * @author Dr. William Kreahling
  * @version November 2017
  */
-public abstract class MessageSource implements MessageListener {
+public abstract class MessageSource{
     /** Observers registered to receive notifications about this subject. */
     private List<MessageListener> messageListeners;
 
