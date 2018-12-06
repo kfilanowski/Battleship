@@ -30,9 +30,13 @@ public class BattleServer implements MessageListener {
 	/** TODO */
 	private int current;
 	/** Game class for game logic. */
-	Game game;
+	protected Game game;
 	/** A map of connection agents. */
 	HashMap<String, ConnectionAgent> agents;
+
+
+	private  MessageSource ourMessageAgent;
+
 	
 	/**
 	 * Default Constructor for BattleServer.
@@ -52,6 +56,12 @@ public class BattleServer implements MessageListener {
 		game = new Game();
 		agents = new HashMap<String, ConnectionAgent>();
 		serverSocket = new ServerSocket(port);
+
+
+
+		Thread acceptSockets = new Thread(new ServerAcceptThread(this));
+		acceptSockets.start();
+		//this.ourMessageAgent = new ConnectionAgent(null);
 	}
 	
 	/**
@@ -64,6 +74,10 @@ public class BattleServer implements MessageListener {
 		game = new Game(clamp(gridSize));
 		agents = new HashMap<String, ConnectionAgent>();
 		serverSocket = new ServerSocket(port);
+
+
+		Thread acceptSockets = new Thread(new ServerAcceptThread(this));
+		acceptSockets.start();
 	}
 
 	/**
@@ -90,14 +104,56 @@ public class BattleServer implements MessageListener {
 	 * 
 	 */
 	public void listen() {
-		while (!serverSocket.isClosed()) {
-			try {
-				new Thread(new ConnectionAgent(serverSocket.accept())).start();
-			} catch (IOException ex) {
-				System.out.println(ex.getMessage());
-			}
-		}
+
+
+
+
 	}
+
+
+
+	protected void addConnectAgent(ConnectionAgent agent, String user){
+		agent.addMessageListener(this);
+
+		String[] userNameArray = user.split(" ");
+		String name = userNameArray[1];
+
+		agents.put(name, agent);
+
+
+	}
+
+	
+	/**
+	 * 
+	 * @param message
+	 */
+	public void broadcast(String message) {
+		//agent.sendMessage(message);
+	}
+	
+	/**
+	 * 
+	 * @param message
+	 * @param source
+	 */
+	public void messageReceived(String message, MessageSource source) {
+		System.out.println("The server has recieved a message!!" + message);
+	}
+	
+	/**
+	 * 
+	 * @param source
+	 */
+	public void sourceClosed(MessageSource source) {
+		
+	}
+
+
+	protected ServerSocket getServerSocket(){
+		return this.serverSocket;
+	}
+
 
 	// TESTS GAMEPLAY. Delete this later.
 	public void testGameplay() {
@@ -167,29 +223,10 @@ public class BattleServer implements MessageListener {
 			}
 		}
 	}
-	
-	/**
-	 * 
-	 * @param message
-	 */
-	public void broadcast(String message) {
-		//agent.sendMessage(message);
-	}
-	
-	/**
-	 * 
-	 * @param message
-	 * @param source
-	 */
-	public void messageReceived(String message, MessageSource source) {
-		
-	}
-	
-	/**
-	 * 
-	 * @param source
-	 */
-	public void sourceClosed(MessageSource source) {
-		
-	}
+
+
+
+
+
+
 }
