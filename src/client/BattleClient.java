@@ -55,7 +55,10 @@ public class BattleClient extends MessageSource implements MessageListener {
 		// lets the client's connection agent add the client to the agent's list
 		// of message listeners to notify and other methods
 		this.agent = new ConnectionAgent(new Socket(this.host, port));
-		//agent.addMessageListener(this);
+		this.agent.addMessageListener(this);
+		this.agent.sendMessage("/join " + username);
+		Thread runAgent = new Thread(agent);
+		runAgent.start();
 	}
 	
 	public void connect() {
