@@ -3,6 +3,7 @@ package client;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 
 /**
  * The driver for a Battleship client. 
@@ -11,7 +12,10 @@ import java.net.UnknownHostException;
  * @version November 2018
  */
 public class BattleDriver {
+	/** A client to play the Battleship game and to connect to BattleServer. */
 	BattleClient client;
+	/** Scanner to read input from the keyboard. */
+	Scanner in;
 
 	/**
 	 * Constructor for a Battle Driver. Creates a client.
@@ -19,10 +23,11 @@ public class BattleDriver {
 	 * @param port - The port number to connect to.
 	 * @param username - The username of the player.
 	 * @throws UnknownHostException - Thrown if the hostname could not
-	 * resolve to an IP Address.
+	 * 								  resolve to an IP Address.
 	 */
 	public BattleDriver(InetAddress host, int port, String username)
 			throws UnknownHostException, IOException {
+		in = new Scanner(System.in);
 		client = new BattleClient(host, port, username);
 	}
 
@@ -35,9 +40,29 @@ public class BattleDriver {
 	}
 
 	/**
-	 * 
+	 * Parses input from the keyboard and sends them to the client.
+	 */
+	private void parseInput() {
+		while (true) {
+			System.out.println("Listening for client input:");
+			String input = in.nextLine();
+
+			switch (input) {
+				case "/join":
+				case "/attack":
+				case "/play":
+				case "/show":
+				case "/quit":
+			}
+		}
+	}
+
+	/**
+	 * The main driver of a client program. Attempts to communicate with
+	 * the server.
 	 * @param args - Command line arguments, which include:
-	 * hostname, port number, and user nickname. All are required.
+	 * 				 hostname, port number, and user nickname.
+	 *               All are required.
 	 */
 	public static void main(String[] args) {
 		if (args.length < 3) {
@@ -45,9 +70,9 @@ public class BattleDriver {
 		}
 		try {
 			BattleDriver driver = new BattleDriver(
-					InetAddress.getByName(args[0]),
-					Integer.parseInt(args[1]), args[2]);
-		driver.client.connect();
+								  InetAddress.getByName(args[0]),
+								  Integer.parseInt(args[1]), args[2]);
+			driver.client.connect();
 		} catch (NumberFormatException ex) {
 			printUsageAndExit();
 		} catch (UnknownHostException ex) {

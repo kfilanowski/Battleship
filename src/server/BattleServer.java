@@ -92,9 +92,6 @@ public class BattleServer implements MessageListener {
 	 * 
 	 */
 	public void listen() {
-		boolean go = false;
-		//server socket accepts? or accepts a certain conection agent..
-
 		while (!serverSocket.isClosed()) {
 			while(!go)
 			try {
