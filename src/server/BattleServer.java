@@ -93,14 +93,11 @@ public class BattleServer implements MessageListener {
 	 */
 	public void listen() {
 		while (!serverSocket.isClosed()) {
-			while(!go)
 			try {
-				Socket sock = serverSocket.accept();
-
-			}catch (IOException ioe){
-				System.out.println(ioe.getMessage());
+				new Thread(new ConnectionAgent(serverSocket.accept())).start();
+			} catch (IOException ex) {
+				System.out.println(ex.getMessage());
 			}
-			go = isGameStarted?
 		}
 	}
 

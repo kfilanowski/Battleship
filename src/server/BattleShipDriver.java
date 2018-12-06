@@ -75,7 +75,7 @@ public class BattleShipDriver {
 			// Listen for requests
 			driver.listen();
 			// Test gameplay.                 // ******DEBUGGING*******/
-			driver.server.testGameplay();     // ******DEBUGGING*******/
+			//driver.server.testGameplay();     // ******DEBUGGING*******/
 		} catch (NumberFormatException ex) {
 			PrintUsageAndExit();
 		} catch (IOException ex) {

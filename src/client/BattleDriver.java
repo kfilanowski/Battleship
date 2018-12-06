@@ -43,18 +43,39 @@ public class BattleDriver {
 	 * Parses input from the keyboard and sends them to the client.
 	 */
 	private void parseInput() {
+		// For now, let's just send anything that the client writes.
+		System.out.println("Ready for input!");
 		while (true) {
+			client.send(in.nextLine());
+		}
+
+		/*while (true) {
 			System.out.println("Listening for client input:");
-			String input = in.nextLine();
+			String input = in.next();
 
 			switch (input) {
-				case "/join":
-				case "/attack":
-				case "/play":
-				case "/show":
-				case "/quit":
+			case "/join": {
+				
+			} break;
+			case "/attack": {
+
 			}
-		}
+			break;
+			case "/play": {
+
+			}
+			break;
+			case "/show": {
+
+			}
+			break;
+			case "/quit": {
+
+			}
+			break;
+			default: System.out.println("Invalid command: " + input);
+			}
+		}*/
 	}
 
 	/**
@@ -73,6 +94,7 @@ public class BattleDriver {
 								  InetAddress.getByName(args[0]),
 								  Integer.parseInt(args[1]), args[2]);
 			driver.client.connect();
+			driver.parseInput();
 		} catch (NumberFormatException ex) {
 			printUsageAndExit();
 		} catch (UnknownHostException ex) {

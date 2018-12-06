@@ -24,9 +24,9 @@ public class ConnectionAgent extends MessageSource implements Runnable {
 		}catch (IOException ioe){
 			System.out.print(ioe.getMessage());
 		}
-		// we run this object as a thread
-		thread = new Thread(this);
-		thread.start();
+		// // we run this object as a thread
+		// thread = new Thread(this);
+		// thread.start();
 	}
 	
 	public void sendMessage(String message) {
