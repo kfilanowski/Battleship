@@ -59,8 +59,6 @@ public class BattleClient extends MessageSource implements MessageListener {
 	
 	public void connect() {
 		send("/join " + username);
-		Scanner in = new Scanner(System.in);
-		System.out.println("Looking for input in BattleClient connect()");
 		
 
 

@@ -16,17 +16,19 @@ public class ConnectionAgent extends MessageSource implements Runnable {
 	private Thread thread;
 	
 	public ConnectionAgent(Socket socket) {
+		this.socket = socket;
 		try {
 			// server's output stream || client's input stream
 			in = new Scanner(socket.getInputStream());
 			// server's input stream || client's output stream
 			out = new PrintStream(socket.getOutputStream());
-		}catch (IOException ioe){
+		} catch (IOException ioe){
 			System.out.print(ioe.getMessage());
 		}
 		// // we run this object as a thread
 		// thread = new Thread(this);
 		// thread.start();
+		
 	}
 	
 	public void sendMessage(String message) {
