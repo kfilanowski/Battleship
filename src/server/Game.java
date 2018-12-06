@@ -27,7 +27,7 @@ public class Game {
 	/**
 	 * Constructor for the Game.
 	 * Initializes a game board with a specified size.
-	 * @param size - The size of the game.
+	 * @param gridSize - The size of the game.
 	 */
 	public Game(int gridSize) {
 		gridList = new HashMap<String, Grid>();
@@ -61,7 +61,7 @@ public class Game {
 	
 	/**
 	 * Returns the private (Player only) formatted grid of a specific player.
-	 * @param playerNumber - Which player's grid to retrieve.
+	 * @param username - Which player's grid to retrieve.
 	 * @return - A formatted string containing the grid of a specific player.
 	 */
 	public String getPrivateGrid(String username) {

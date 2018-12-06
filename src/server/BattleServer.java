@@ -6,6 +6,7 @@ import common.ConnectionAgent;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.sql.Connection;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.HashMap;
@@ -117,6 +118,7 @@ public class BattleServer implements MessageListener {
 
 		String[] userNameArray = user.split(" ");
 		String name = userNameArray[1];
+		System.out.println(name);
 
 		agents.put(name, agent);
 
@@ -131,6 +133,14 @@ public class BattleServer implements MessageListener {
 	public void broadcast(String message) {
 		//agent.sendMessage(message);
 	}
+
+	private void parseCommands(String message, ConnectionAgent agent) {
+		String[] command = message.split(" ");
+		System.out.println(command[0] + " ---- " + command[1]);
+		switch(command[0]) {
+			case "/join": addConnectAgent(agent, command[1]);
+		}
+	}
 	
 	/**
 	 * 
@@ -138,7 +148,11 @@ public class BattleServer implements MessageListener {
 	 * @param source
 	 */
 	public void messageReceived(String message, MessageSource source) {
+		System.out.println(message);
+		parseCommands(message, (ConnectionAgent)source);
+
 		System.out.println("The server has recieved a message!!" + message);
+		((ConnectionAgent)source).sendMessage("I recieved your dongle:" + message);
 	}
 	
 	/**
@@ -146,7 +160,7 @@ public class BattleServer implements MessageListener {
 	 * @param source
 	 */
 	public void sourceClosed(MessageSource source) {
-		
+
 	}
 
 

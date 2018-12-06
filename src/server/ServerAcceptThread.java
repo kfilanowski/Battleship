@@ -28,8 +28,8 @@ public class ServerAcceptThread implements Runnable {
                 String line = in.nextLine();
                 // server's input stream || client's output stream
                 ConnectionAgent agent = new ConnectionAgent(socket);
-                (new Thread(agent)).start();
                 this.battleServer.addConnectAgent(agent, line);
+                (new Thread(agent)).start();
             }catch (IOException ioe){
                 System.out.println("Caught IOException in serverAcceptThread run method");
             }
