@@ -69,7 +69,7 @@ public class BattleClient extends MessageSource implements MessageListener {
 	}
 	
 	public void messageReceived(String message, MessageSource source) {
-		
+		System.out.println("got it" + message);
 	}
 	
 	public void sourceClosed(MessageSource source) {
