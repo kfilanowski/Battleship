@@ -143,7 +143,9 @@ public class BattleServer implements MessageListener {
 	 * @param message
 	 * @param agent
 	 */
-	private void parseCommands(String message, ConnectionAgent agent) {
+	private void parseCommands(String message, ConnectionAgent agent) throws
+	 		CoordinateOutOfBoundsException, IllegalCoordinateException, 
+	 		InputMismatchException, GameOverException {
 		String[] command = message.split(" ");
 		switch(command[0]) {
 			case "/join":
@@ -182,13 +184,20 @@ public class BattleServer implements MessageListener {
 				agent.sendMessage("Sorry, it is currently not your turn.");
 			}
 		} else if(game.isGameStarted()){
-	private void quitCommand(ConnectionAgent agent){
+			agent.sendMessage("Game not in progress");
+		}else if(!agents.containsKey(command[1])){
+			agent.sendMessage(command[1] + " is not a valid player.");
+			agent.sendMessage(printValidUsers(agent));
+		}
+	}
+
+	private void quitCommand(ConnectionAgent agent) {
 		// we close the client's connection agent
 		agent.close();
 		// we get the user name of the client
 		String agentsName = findUsername(agent);
 		// if it is not null
-		if(!agentsName.equals("")){
+		if (!agentsName.equals("")) {
 			// we remove them from the game list
 			game.removePlayer(agentsName);
 			// we remove them from our connection agent hash map
@@ -199,11 +208,11 @@ public class BattleServer implements MessageListener {
 			broadcast(agentsName + " left the game.");
 		}
 		// if the game has started and there is only one player left
-		if(game.getTotalPlayers() == 1 && !game.isGameStarted()){
+		if (game.getTotalPlayers() == 1 && !game.isGameStarted()) {
 			// we tell the player that the game is ending because there is only one player
 			broadcast("You are the only player.. Game is ending.");
 			// we find that single user's name
-			for(String agent1 : agents.keySet()){
+			for (String agent1 : agents.keySet()) {
 				// we remove the agent from our connection agent hash map
 				agents.remove(agent1);
 				// we remove that player from the game grid list
@@ -211,30 +220,6 @@ public class BattleServer implements MessageListener {
 				// remove the username from the list of turns
 				usernames.remove(agentsName);
 			}
-		}
-	}
-
-	 * Finds the username to a given ConnectionAgent.
-	 * @param agent - The ConnectionAgent.
-	 * @return The username attached to this ConnectionAgent.
-	 */
-	private String findUsername(ConnectionAgent agent) {
-		for (String key : agents.keySet()) {
-			if (agents.get(key).getSocket().getLocalPort()
-					== agent.getSocket().getLocalPort()) {
-				return key;
-			}
-		}
-		return "";
-	}
-
-
-
-	/**
-			agent.sendMessage("Game not in progress");
-		}else if(!agents.containsKey(command[1])){
-			agent.sendMessage(command[1] + " is not a valid player.");
-			agent.sendMessage(printValidUsers(agent));
 		}
 	}
 
@@ -334,13 +319,16 @@ public class BattleServer implements MessageListener {
 	 */
 	public void messageReceived(String message, MessageSource source) {
 		try {
-		//parseCommands(message, (ConnectionAgent)source);
-		} catch () {
-
+			parseCommands(message, (ConnectionAgent)source);
+		} catch (CoordinateOutOfBoundsException ex) {
+			((ConnectionAgent) source).sendMessage("Coordinate's specified are out of bounds.");
+		} catch (IllegalCoordinateException ex) {
+ 			((ConnectionAgent) source).sendMessage("Coordinates were already attacked. ");
+		} catch (GameOverException ex) {
+			((ConnectionAgent) source).sendMessage("Game Over!");
+		} catch (InputMismatchException ex) {
+			System.out.println(ex.getMessage());
 		}
-
-		System.out.println("The server has recieved a message!! " + message);
-		((ConnectionAgent)source).sendMessage("I recieved your message: " + message);
 	}
 
 	/**

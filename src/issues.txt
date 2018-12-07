@@ -15,3 +15,5 @@ max grid size?
 
 
 ---we need to close threads in server when player leaves or w/e. or is that how it even works?
+
+make sure that if the player doesnt give the correct coordinates, they get another turn

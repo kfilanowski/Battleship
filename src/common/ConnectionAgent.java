@@ -50,7 +50,7 @@ public class ConnectionAgent extends MessageSource implements Runnable {
 		}catch(IOException ioe){
 			System.out.println(ioe.getMessage());
 		}
-		removeMessageListener((MessageListener) this);
+		closeMessageSource();
 	}
 	
 	public void run() {
