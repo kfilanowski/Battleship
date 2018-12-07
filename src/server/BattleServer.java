@@ -113,7 +113,7 @@ public class BattleServer implements MessageListener {
 
 
 
-	protected void addConnectAgent(ConnectionAgent agent, String user){
+	protected void addConnectAgent(ConnectionAgent agent){
 		agent.addMessageListener(this);
 
 		String[] userNameArray = user.split(" ");
@@ -125,22 +125,83 @@ public class BattleServer implements MessageListener {
 
 	}
 
-	
-	/**
-	 * 
-	 * @param message
-	 */
-	public void broadcast(String message) {
-		//agent.sendMessage(message);
-	}
+
 
 	private void parseCommands(String message, ConnectionAgent agent) {
 		String[] command = message.split(" ");
 		System.out.println(command[0] + " ---- " + command[1]);
 		switch(command[0]) {
-			case "/join": addConnectAgent(agent, command[1]);
+			case "/join":
+				joinCommand(command, agent);
+				break;
+			case "/play":
+				playCommand(command, agent);
+				break;
+			case "/attack":
+				attackCommand(command, agent);
+				break;
+			case "/quit":
+				break;
+			case "/show":
+				break;
 		}
 	}
+
+
+	private void attackCommand(String[] command, ConnectionAgent agent){
+		// if the game is started and the specified
+		if(!game.isGameStarted() && agents.containsKey(command[1]) && ){
+			game.shoot()
+		}else if(game.isGameStarted()){
+			agent.sendMessage("Game not in progress");
+		}else if(!agents.containsKey(command[1])){
+			StringBuilder sendThis = new StringBuilder();
+			sendThis.append(command[1]);
+			sendThis.append(" is not a valid player in the game\nValid Users Are:\n");
+			for(String user : agents.keySet()){
+				sendThis.append(user);
+				sendThis.append("\n");
+			}
+			agent.sendMessage(sendThis.toString());
+		}
+	}
+
+
+
+
+	private void joinCommand(String[] command, ConnectionAgent agent){
+		if(!game.isGameStarted()) {
+			String name = command[1];
+			System.out.println(name);
+			agents.put(name, agent);
+		}else{
+			agent.sendMessage("Game is already begun... Sorry.. You are being kicked..." +
+					" :)");
+			agent.close();
+		}
+	}
+
+	private void playCommand(String[] command, ConnectionAgent agent){
+		// if we have enough players and the game is not already started
+		if(agents.size() >= 2 && game.isGameStarted()){
+			// we start the game
+			game.setGameStarted(true);
+			// adds each player username to game.addPlayer()
+			for(String user : agents.keySet()){
+				game.addPlayer(user);
+			}
+			// tell everyone the game has started
+			broadcast("The game begins");
+			// 	if we do not have enough players and the game is not already started
+		}else if(agents.size() < 2 && game.isGameStarted()){
+			agent.sendMessage("Not enough players to play the game");
+			// if the game is already started
+		}else if(!game.isGameStarted()){
+			agent.sendMessage("Game already in progress");
+		}
+	}
+
+
 	
 	/**
 	 * 
@@ -154,7 +215,14 @@ public class BattleServer implements MessageListener {
 		System.out.println("The server has recieved a message!!" + message);
 		((ConnectionAgent)source).sendMessage("I recieved your dongle:" + message);
 	}
-	
+
+	public void broadcast(String message) {
+		for(ConnectionAgent agent: agents.values()){
+			agent.sendMessage(message);
+		}
+	}
+
+
 	/**
 	 * 
 	 * @param source

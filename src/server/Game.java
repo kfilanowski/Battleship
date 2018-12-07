@@ -10,17 +10,19 @@ import java.util.HashMap;
  */
 public class Game {
 	/** Holds the grids for each player. */
-	HashMap<String, Grid> gridList;
+	private HashMap<String, Grid> gridList;
 	/** The default size of the grid for the game. */
 	private static final int DEFAULT_GRID_SIZE = 10;
 	/** The size of the grid for the game. */
 	private int gridSize;
+	/** Tells us if the game has already started or not */
+	private boolean gameStarted;
 	
 	/**
 	 * Default constructor for the Game.
 	 * Uses the default grid size.
 	 */
-	public Game() {
+	protected Game() {
 		this(DEFAULT_GRID_SIZE);
 	}
 	
@@ -29,16 +31,17 @@ public class Game {
 	 * Initializes a game board with a specified size.
 	 * @param gridSize - The size of the game.
 	 */
-	public Game(int gridSize) {
+	protected Game(int gridSize) {
 		gridList = new HashMap<String, Grid>();
 		this.gridSize = gridSize;
+		this.gameStarted = false;
 	}
 	
 	/**
 	 * Adds a new player to the game.
 	 * @param username - The player's username to be used in the game.
 	 */
-	public void addPlayer(String username) {
+	protected void addPlayer(String username) {
 		gridList.put(username, new Grid(gridSize));
 	}
 	
@@ -46,7 +49,7 @@ public class Game {
 	 * Remove a player from the game.
 	 * @param username - The username of the player to remove from the game.
 	 */
-	public void removePlayer(String username) {
+	protected void removePlayer(String username) {
 		gridList.remove(username);
 	}
 	
@@ -55,16 +58,33 @@ public class Game {
 	 * @param username - Which player's grid to retrieve by using their username.
 	 * @return - A formatted string containing the grid of a specific player.
 	 */
-	public String getPublicGrid(String username) {
+	protected String getPublicGrid(String username) {
 		return gridList.get(username).getPublicGrid();
 	}
-	
+
+
+	/**
+	 * Sets the gameStarted variable to true or false
+	 * @param gameStarted
+	 */
+	protected void setGameStarted(boolean gameStarted) {
+		this.gameStarted = gameStarted;
+	}
+
+	/**
+	 * Gets the boolean of our game started
+	 * @return whether the game has been started or not
+	 */
+	protected boolean isGameStarted() {
+		return gameStarted;
+	}
+
 	/**
 	 * Returns the private (Player only) formatted grid of a specific player.
 	 * @param username - Which player's grid to retrieve.
 	 * @return - A formatted string containing the grid of a specific player.
 	 */
-	public String getPrivateGrid(String username) {
+	protected String getPrivateGrid(String username) {
 		return gridList.get(username).getPrivateGrid();
 	}
 	
@@ -75,11 +95,11 @@ public class Game {
 	 * @return - True if coordinate was a hit, false if it was a miss.
 	 * @throws CoordinateOutOfBoundsException - Thrown when the player chooses a
 	 * coordinate that is not within the size of the grid.
-	 * @throws IllegalCoordinateException - Thown when the player chooses a
+	 * @throws IllegalCoordinateException - Thrown when the player chooses a
 	 * coordinate that has already been attacked. 
 	 * @throws GameOverException - Thrown when the game ends by sinking all ships.
 	 */
-	public Boolean shoot(String username, int x, int y) throws 
+	protected Boolean shoot(String username, int x, int y) throws
 			CoordinateOutOfBoundsException, IllegalCoordinateException, GameOverException {
 		if (x >= gridSize || x < 0) {
 			// Tells the client that this coordinate was out of bounds.
