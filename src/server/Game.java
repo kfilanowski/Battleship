@@ -1,6 +1,8 @@
 package server;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.NavigableMap;
 
 /**
  * The main game logic for BattleShip.
@@ -62,6 +64,10 @@ public class Game {
 		return gridList.get(username).getPublicGrid();
 	}
 
+
+	protected int getTotalPlayers(){
+		return this.gridList.size();
+	}
 
 	/**
 	 * Sets the gameStarted variable to true or false

@@ -128,7 +128,7 @@ public class BattleServer implements MessageListener {
 
 	private void parseCommands(String message, ConnectionAgent agent) {
 		String[] command = message.split(" ");
-		System.out.println(command[0] + " ---- " + command[1]);
+		//System.out.println(command[0] + " ---- " + command[1]);
 		switch(command[0]) {
 			case "/join":
 				joinCommand(command, agent);
@@ -140,6 +140,7 @@ public class BattleServer implements MessageListener {
 				attackCommand(command, agent);
 				break;
 			case "/quit":
+				quitCommand(agent);
 				break;
 			case "/show":
 				break;
@@ -147,10 +148,67 @@ public class BattleServer implements MessageListener {
 	}
 
 
+	private void quitCommand(ConnectionAgent agent){
+		// we close the client's connection agent
+		agent.close();
+		// we get the user name of the client
+		String agentsName = findUsername(agent);
+		// if it is not null
+		if(!agentsName.equals("")){
+			// we remove them from the game list
+			game.removePlayer(agentsName);
+			// we remove them from our connection agent hash map
+			agents.remove(agentsName);
+			// Remove the username from the list of turns.
+			usernames.remove(agentsName);
+			// we tell everyone the player has left
+			broadcast(agentsName + " left the game.");
+		}
+		// if the game has started and there is only one player left
+		if(game.getTotalPlayers() == 1 && !game.isGameStarted()){
+			// we tell the player that the game is ending because there is only one player
+			broadcast("You are the only player.. Game is ending.");
+			// we find that single user's name
+			for(String agent1 : agents.keySet()){
+				// we remove the agent from our connection agent hash map
+				agents.remove(agent1);
+				// we remove that player from the game grid list
+				game.removePlayer(agent1);
+				// remove the username from the list of turns
+				usernames.remove(agentsName);
+			}
+		}
+	}
+
+
+	/**
+	 * Finds the username to a given ConnectionAgent.
+	 * @param agent - The ConnectionAgent.
+	 * @return The username attached to this ConnectionAgent.
+	 */
+	private String findUsername(ConnectionAgent agent) {
+		for (String key : agents.keySet()) {
+			if (agents.get(key).getSocket().getLocalPort()
+					== agent.getSocket().getLocalPort()) {
+				return key;
+			}
+		}
+		return "";
+	}
+
+
+
+
 	private void attackCommand(String[] command, ConnectionAgent agent){
 		// if the game is started and the specified
 		if(!game.isGameStarted() && agents.containsKey(command[1]) /*&&*/ ){
-			//game.shoot();
+			try {
+				int x = Integer.parseInt(command[2]);
+				int y = Integer.parseInt(command[3]);
+				game.shoot(command[1], x, y);
+			}catch (CoordinateOutOfBoundsException coobe){
+				agent.sendMessage("");
+			}
 		}else if(game.isGameStarted()){
 			agent.sendMessage("Game not in progress");
 		}else if(!agents.containsKey(command[1])){
@@ -164,8 +222,6 @@ public class BattleServer implements MessageListener {
 			agent.sendMessage(sendThis.toString());
 		}
 	}
-
-
 
 
 	private void joinCommand(String[] command, ConnectionAgent agent){
