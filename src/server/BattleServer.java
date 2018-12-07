@@ -175,7 +175,7 @@ public class BattleServer implements MessageListener {
 	private void attackCommand(String[] command, ConnectionAgent agent) throws
 	CoordinateOutOfBoundsException, IllegalCoordinateException, InputMismatchException,
 	GameOverException {
-		if(!game.isGameStarted() && agents.containsKey(command[1])){
+		if(game.isGameStarted() && agents.containsKey(command[1])){
 			if (usernames.get(current).equals(command[1]) ) {
 				game.shoot(command[1], Integer.parseInt(command[2]),
 										 Integer.parseInt(command[3]));
@@ -183,7 +183,7 @@ public class BattleServer implements MessageListener {
 			} else {
 				agent.sendMessage("Sorry, it is currently not your turn.");
 			}
-		} else if(game.isGameStarted()){
+		} else if(!game.isGameStarted()){
 			agent.sendMessage("Game not in progress");
 		}else if(!agents.containsKey(command[1])){
 			agent.sendMessage(command[1] + " is not a valid player.");
@@ -258,7 +258,7 @@ public class BattleServer implements MessageListener {
 	 */
 	private void playCommand(String[] command, ConnectionAgent agent){
 		// if we have enough players and the game is not already started
-		if(agents.size() >= 2 && game.isGameStarted()){
+		if(agents.size() >= 2 && !game.isGameStarted()){
 			// we start the game
 			game.setGameStarted(true);
 			// adds each player username to game.addPlayer()
@@ -268,10 +268,10 @@ public class BattleServer implements MessageListener {
 			// tell everyone the game has started
 			broadcast("The game begins");
 			// 	if we do not have enough players and the game is not already started
-		}else if(agents.size() < 2 && game.isGameStarted()){
+		}else if(agents.size() < 2 && !game.isGameStarted()){
 			agent.sendMessage("Not enough players to play the game");
 			// if the game is already started
-		}else if(!game.isGameStarted()){
+		}else if(game.isGameStarted()){
 			agent.sendMessage("Game already in progress");
 		}
 	}
@@ -303,7 +303,9 @@ public class BattleServer implements MessageListener {
 	 * @return The username attached to this ConnectionAgent.
 	 */
 	private String findUsername(ConnectionAgent agent) {
+		System.out.println(agent.getSocket().getLocalPort());
 		for (String key : agents.keySet()) {
+			System.out.println(key + " " + agents.get(key).getSocket().getLocalPort());
 			if (agents.get(key).getSocket().getLocalPort()
 			== agent.getSocket().getLocalPort()) {
 				return key;

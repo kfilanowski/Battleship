@@ -3,6 +3,7 @@ package common;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class ConnectionAgent extends MessageSource implements Runnable {
@@ -37,7 +38,7 @@ public class ConnectionAgent extends MessageSource implements Runnable {
 	}
 
 	public boolean isConnected() {
-		return this.socket.isConnected();
+		return !this.socket.isClosed();
 	}
 
 	public Socket getSocket() {
@@ -54,9 +55,13 @@ public class ConnectionAgent extends MessageSource implements Runnable {
 	}
 	
 	public void run() {
-		while(isConnected()){
-			String input = in.nextLine(); // This line will throw an exception if client abrupts connection.
-			super.notifyReceipt(input);
+		try {
+			while(isConnected()){
+				String input = in.nextLine(); // This line will throw an exception if client abrupts connection.
+				super.notifyReceipt(input);
+			}
+		}catch(NoSuchElementException nsee) {
+			close();
 		}
 	}
 }

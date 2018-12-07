@@ -66,6 +66,10 @@ public class BattleClient extends MessageSource implements MessageListener {
 		send("/join " + username);
 	}
 
+	public void close() {
+		agent.close();
+	}
+
 	/**
 	 * 
 	 */

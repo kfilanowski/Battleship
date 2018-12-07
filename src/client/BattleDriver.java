@@ -107,7 +107,9 @@ public class BattleDriver {
 					client.send(input[0]);
 				else
 					printInvalidCommand(String.join(" ", input));
-			} break;
+				client.close();
+				break;
+			}
 			default: printInvalidCommand(String.join(" ", input));
 			}
 		}
