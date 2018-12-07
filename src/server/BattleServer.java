@@ -9,6 +9,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -28,16 +30,14 @@ public class BattleServer implements MessageListener {
 	private int port;
 	/** The server socket. */
 	private ServerSocket serverSocket;
-	/** TODO */
+	/** The index of the current player's turn. */
 	private int current;
 	/** Game class for game logic. */
 	protected Game game;
 	/** A map of connection agents. */
-	HashMap<String, ConnectionAgent> agents;
-
-
-	private  MessageSource ourMessageAgent;
-
+	HashMap<String, ConnectionAgent> agents; // maybe not even useful. might be able to do one arraylist only.
+	/** An ArrayList of usernames in the game. Used to decide the turn. */
+	ArrayList<String> usernames;
 	
 	/**
 	 * Default Constructor for BattleServer.
@@ -56,6 +56,7 @@ public class BattleServer implements MessageListener {
 		this.port = port;
 		game = new Game();
 		agents = new HashMap<String, ConnectionAgent>();
+		usernames = new ArrayList<String>();
 		serverSocket = new ServerSocket(port);
 
 
@@ -73,6 +74,7 @@ public class BattleServer implements MessageListener {
 		this.port = port;
 		game = new Game(clamp(gridSize));
 		agents = new HashMap<String, ConnectionAgent>();
+		usernames = new ArrayList<String>();
 		serverSocket = new ServerSocket(port);
 
 
@@ -106,12 +108,13 @@ public class BattleServer implements MessageListener {
 	public void listen() {
 
 
-
-
 	}
 
 
-
+	/**
+	 * 
+	 * @param agent
+	 */
 	protected void addConnectAgent(ConnectionAgent agent){
 		agent.addMessageListener(this);
 
@@ -121,14 +124,27 @@ public class BattleServer implements MessageListener {
 
 		//agents.put(name, agent);
 
+	}
 
+	/**
+	 * 
+	 */
+	private void nextTurn() {
+		if (current >= usernames.size()) {
+			current = 0;
+		} else {
+			current++;
+		}
 	}
 
 
-
+	/**
+	 * 
+	 * @param message
+	 * @param agent
+	 */
 	private void parseCommands(String message, ConnectionAgent agent) {
 		String[] command = message.split(" ");
-		System.out.println(command[0] + " ---- " + command[1]);
 		switch(command[0]) {
 			case "/join":
 				joinCommand(command, agent);
@@ -140,39 +156,60 @@ public class BattleServer implements MessageListener {
 				attackCommand(command, agent);
 				break;
 			case "/quit":
+				quitCommand(command, agent);
 				break;
 			case "/show":
+				showCommand(command, agent);
 				break;
 		}
 	}
 
 
-	private void attackCommand(String[] command, ConnectionAgent agent){
-		// if the game is started and the specified
-		if(!game.isGameStarted() && agents.containsKey(command[1]) /*&&*/ ){
-			//game.shoot();
-		}else if(game.isGameStarted()){
+	/**
+	 * 
+	 * @param command
+	 * @param agent
+	 */
+	private void attackCommand(String[] command, ConnectionAgent agent) throws
+	CoordinateOutOfBoundsException, IllegalCoordinateException, InputMismatchException,
+	GameOverException {
+		if(!game.isGameStarted() && agents.containsKey(command[1])){
+			if (usernames.get(current).equals(command[1]) ) {
+				game.shoot(command[1], Integer.parseInt(command[2]),
+										 Integer.parseInt(command[3]));
+				nextTurn();
+			} else {
+				agent.sendMessage("Sorry, it is currently not your turn.");
+			}
+		} else if(game.isGameStarted()){
 			agent.sendMessage("Game not in progress");
 		}else if(!agents.containsKey(command[1])){
-			StringBuilder sendThis = new StringBuilder();
-			sendThis.append(command[1]);
-			sendThis.append(" is not a valid player in the game\nValid Users Are:\n");
-			for(String user : agents.keySet()){
-				sendThis.append(user);
-				sendThis.append("\n");
-			}
-			agent.sendMessage(sendThis.toString());
+			agent.sendMessage(command[1] + " is not a valid player.");
+			agent.sendMessage(printValidUsers(agent));
 		}
 	}
 
+	private String printValidUsers(ConnectionAgent agent) {
+		StringBuilder sendThis = new StringBuilder();
+		sendThis.append("Valid Users Are:\n");
+		for (String user : agents.keySet()) {
+			sendThis.append(user + "\n");
+		}
+		return sendThis.toString();
+	}
 
 
-
+	/**
+	 * 
+	 * @param command
+	 * @param agent
+	 */
 	private void joinCommand(String[] command, ConnectionAgent agent){
 		if(!game.isGameStarted()) {
 			String name = command[1];
 			System.out.println(name);
 			agents.put(name, agent);
+			usernames.add(name);
 		}else{
 			agent.sendMessage("Game is already begun... Sorry.. You are being kicked..." +
 					" :)");
@@ -180,6 +217,11 @@ public class BattleServer implements MessageListener {
 		}
 	}
 
+	/**
+	 * 
+	 * @param command
+	 * @param agent
+	 */
 	private void playCommand(String[] command, ConnectionAgent agent){
 		// if we have enough players and the game is not already started
 		if(agents.size() >= 2 && game.isGameStarted()){
@@ -200,7 +242,41 @@ public class BattleServer implements MessageListener {
 		}
 	}
 
+	/**
+	 * 
+	 * @param command
+	 * @param agent
+	 */
+	private void showCommand(String[] command, ConnectionAgent agent) {
+		if (game.isGameStarted() && agents.containsKey(command[1])) {
+			if (findUsername(agent).equalsIgnoreCase(command[1])) {
+				agent.sendMessage(game.getPrivateGrid(command[1]));
+			} else {
+				agent.sendMessage(game.getPublicGrid(command[1]));
+			}
+		} else if (!game.isGameStarted()) {
+			agent.sendMessage("Game not in progress");
+		} else {
+			agent.sendMessage("Invalid user: " + command[1]);
+			agent.sendMessage(printValidUsers(agent));
+		}
+	}
 
+
+	/**
+	 * Finds the username to a given ConnectionAgent.
+	 * @param agent - The ConnectionAgent.
+	 * @return The username attached to this ConnectionAgent.
+	 */
+	private String findUsername(ConnectionAgent agent) {
+		for (String key : agents.keySet()) {
+			if (agents.get(key).getSocket().getLocalPort()
+			== agent.getSocket().getLocalPort()) {
+				return key;
+			}
+		}
+		return "";
+	}
 	
 	/**
 	 * 
@@ -208,12 +284,20 @@ public class BattleServer implements MessageListener {
 	 * @param source
 	 */
 	public void messageReceived(String message, MessageSource source) {
+		try {
 		//parseCommands(message, (ConnectionAgent)source);
+		} catch () {
+
+		}
 
 		System.out.println("The server has recieved a message!! " + message);
 		((ConnectionAgent)source).sendMessage("I recieved your message: " + message);
 	}
 
+	/**
+	 * 
+	 * @param message
+	 */
 	public void broadcast(String message) {
 		for(ConnectionAgent agent: agents.values()){
 			agent.sendMessage(message);
@@ -230,6 +314,10 @@ public class BattleServer implements MessageListener {
 	}
 
 
+	/**
+	 * 
+	 * @return
+	 */
 	protected ServerSocket getServerSocket(){
 		return this.serverSocket;
 	}

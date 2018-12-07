@@ -65,6 +65,13 @@ public class BattleClient extends MessageSource implements MessageListener {
 	public void connect() {
 		send("/join " + username);
 	}
+
+	/**
+	 * 
+	 */
+	public boolean isConnected() {
+		return agent.isConnected();
+	}
 	
 	/**
 	 * Prints the message received from its ConnectionAgent.

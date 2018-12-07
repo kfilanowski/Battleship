@@ -39,6 +39,10 @@ public class ConnectionAgent extends MessageSource implements Runnable {
 	public boolean isConnected() {
 		return this.socket.isConnected();
 	}
+
+	public Socket getSocket() {
+		return socket;
+	}
 	
 	public void close() {
 		try {

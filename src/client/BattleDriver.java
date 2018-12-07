@@ -28,7 +28,6 @@ public class BattleDriver {
 	/** Argument length requirement for the /quit command. */
 	private final int QUIT_LENGTH = 1;
 
-
 	/**
 	 * Constructor for a Battle Driver. Creates a client.
 	 * @param host - The hostname of the server to connect to.
@@ -51,6 +50,10 @@ public class BattleDriver {
 		System.exit(1);
 	}
 
+	/**
+	 * 
+	 * @param command
+	 */
 	private final void printInvalidCommand(String command) {
 		System.out.println("Invalid command: " + command);
 	}
@@ -64,7 +67,7 @@ public class BattleDriver {
 		// Holds the command lin arguments.
 		String[] input;
 
-		while (true) {
+		while (client.isConnected()) {
 			// Read in command line arguments.
 			input = in.nextLine().toLowerCase().split(" ");
 			switch (input[0]) {
