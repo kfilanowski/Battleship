@@ -9,3 +9,9 @@ if the player requests their own grid, it is the private one. (Although I don't 
 Questions:
 max number of players?
 max grid size?
+
+
+
+
+
+---we need to close threads in server when player leaves or w/e. or is that how it even works?

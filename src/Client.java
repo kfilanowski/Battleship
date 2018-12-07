@@ -6,6 +6,7 @@ public class Client {
      public static void main(String[] args) {
          String[] input = {"testing", "some", "stuff"};
          System.out.println(String.join(" ", input));
+         System.out.println(input.length);
          /*
      try {
         System.out.println("Client attempting to connect..");

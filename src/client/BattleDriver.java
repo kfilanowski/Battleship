@@ -3,8 +3,8 @@ package client;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.InputMismatchException;
 import java.util.Scanner;
+
 
 /**
  * The driver for a Battleship client to play the BattleShip game.
@@ -51,48 +51,61 @@ public class BattleDriver {
 		System.exit(1);
 	}
 
+	private final void printInvalidCommand(String command) {
+		System.out.println("Invalid command: " + command);
+	}
+
 	/**
 	 * Parses input from the keyboard and sends them to the client.
 	 * Also ensures that the correct number of arguments are sent,
 	 * while type checking certain arguments.
-	 * @throws InputMismatchException - Thrown if an integer-required command
-	 * 						 			line argument is not an integer.
 	 */
-	private void parseInput() throws InputMismatchException {
+	private void parseInput() {
 		// Holds the command lin arguments.
 		String[] input;
 
 		while (true) {
 			// Read in command line arguments.
-			input = in.next().toLowerCase().split(" ");
+			input = in.nextLine().toLowerCase().split(" ");
 			switch (input[0]) {
 			case "/join": {
-				if (checkInputLength(input, JOIN_LENGTH)) {
+				if (checkInputLength(input, JOIN_LENGTH))
 					client.send(String.join(" ", input));
-				}
+				else
+					printInvalidCommand(String.join(" ", input));
 			} break;
 			case "/attack": {
 				if (checkInputLength(input, ATTACK_LENGTH)) {
-					Integer.parseInt(input[ATTACK_LENGTH - 1]);
-					Integer.parseInt(input[ATTACK_LENGTH - 2]);
-				}
+					try {
+						Integer.parseInt(input[ATTACK_LENGTH - 1]);
+						Integer.parseInt(input[ATTACK_LENGTH - 2]);
+					} catch (NumberFormatException ex) {
+						printInvalidCommand(String.join(" ", input));
+						parseInput();
+					}
+					client.send(String.join(" ", input));
+				} else
+					printInvalidCommand(String.join(" ", input));
 			} break;
 			case "/play": {
-				if (checkInputLength(input, PLAY_LENGTH)) {
+				if (checkInputLength(input, PLAY_LENGTH))
 					client.send(input[0]);
-				}
+				else
+					printInvalidCommand(String.join(" ", input));
 			} break;
 			case "/show": {
-				if (checkInputLength(input, SHOW_LENGTH)) {
+				if (checkInputLength(input, SHOW_LENGTH)) 
 					client.send(String.join(" ", input));
-				}
+				else
+					printInvalidCommand(String.join(" ", input));
 			} break;
 			case "/quit": {
-				if (checkInputLength(input, QUIT_LENGTH)) {
+				if (checkInputLength(input, QUIT_LENGTH)) 
 					client.send(input[0]);
-				}
+				else
+					printInvalidCommand(String.join(" ", input));
 			} break;
-			default: System.out.println("Invalid command: " + input);
+			default: printInvalidCommand(String.join(" ", input));
 			}
 		}
 	}

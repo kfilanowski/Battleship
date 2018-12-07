@@ -6,7 +6,7 @@ import common.ConnectionAgent;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.sql.Connection;
+import java.net.Socket;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.HashMap;
@@ -59,8 +59,7 @@ public class BattleServer implements MessageListener {
 		serverSocket = new ServerSocket(port);
 
 
-
-		Thread acceptSockets = new Thread(new ServerAcceptThread(this));
+		Thread acceptSockets = new Thread(new ServerAcceptThread());
 		acceptSockets.start();
 		//this.ourMessageAgent = new ConnectionAgent(null);
 	}
@@ -77,7 +76,7 @@ public class BattleServer implements MessageListener {
 		serverSocket = new ServerSocket(port);
 
 
-		Thread acceptSockets = new Thread(new ServerAcceptThread(this));
+		Thread acceptSockets = new Thread(new ServerAcceptThread());
 		acceptSockets.start();
 	}
 
@@ -116,11 +115,11 @@ public class BattleServer implements MessageListener {
 	protected void addConnectAgent(ConnectionAgent agent){
 		agent.addMessageListener(this);
 
-		String[] userNameArray = user.split(" ");
-		String name = userNameArray[1];
-		System.out.println(name);
+		//String[] userNameArray = user.split(" ");
+		//String name = userNameArray[1];
+		//System.out.println(name);
 
-		agents.put(name, agent);
+		//agents.put(name, agent);
 
 
 	}
@@ -150,8 +149,8 @@ public class BattleServer implements MessageListener {
 
 	private void attackCommand(String[] command, ConnectionAgent agent){
 		// if the game is started and the specified
-		if(!game.isGameStarted() && agents.containsKey(command[1]) && ){
-			game.shoot()
+		if(!game.isGameStarted() && agents.containsKey(command[1]) /*&&*/ ){
+			//game.shoot();
 		}else if(game.isGameStarted()){
 			agent.sendMessage("Game not in progress");
 		}else if(!agents.containsKey(command[1])){
@@ -209,11 +208,10 @@ public class BattleServer implements MessageListener {
 	 * @param source
 	 */
 	public void messageReceived(String message, MessageSource source) {
-		System.out.println(message);
-		parseCommands(message, (ConnectionAgent)source);
+		//parseCommands(message, (ConnectionAgent)source);
 
-		System.out.println("The server has recieved a message!!" + message);
-		((ConnectionAgent)source).sendMessage("I recieved your dongle:" + message);
+		System.out.println("The server has recieved a message!! " + message);
+		((ConnectionAgent)source).sendMessage("I recieved your message: " + message);
 	}
 
 	public void broadcast(String message) {
@@ -307,8 +305,38 @@ public class BattleServer implements MessageListener {
 	}
 
 
-
-
-
-
+	/**
+	 * This class will be a seperate Thread that accepts clients connecting to
+	 * the BattleServer's server socket. This is in its own class because when
+	 * calling serverSocket.accept, the program hangs. Thus, we must put it in
+	 * its own class and thread so that it does not hang the entire program up.
+	 * 
+	 * @author Jeriah Caplinger
+	 * @author Kevin Filanowski
+	 * @version December 2018
+	 */
+	private class ServerAcceptThread implements Runnable {
+		/**
+		 * Our Thread method. This thread constantly waits for player's joining the
+		 * game. It then gives that connection to the BattleServer
+		 */
+		@Override
+		public void run() {
+			// while the server socket is not closed
+			while (!serverSocket.isClosed()) {
+				try {
+					// we accept the client's connection
+					Socket socket = serverSocket.accept();
+					// We make a new connection agent for this socket
+					ConnectionAgent agent = new ConnectionAgent(socket);
+					// We pass the connection agent to battle server
+					addConnectAgent(agent);
+					// We start the connection agent up as a thread
+					(new Thread(agent)).start();
+				} catch (IOException ioe) {
+					System.out.println("Caught IOException in serverAcceptThread run method");
+				}
+			}
+		}
+	}
 }

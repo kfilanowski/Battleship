@@ -51,7 +51,7 @@ public class ConnectionAgent extends MessageSource implements Runnable {
 	
 	public void run() {
 		while(isConnected()){
-			String input = in.nextLine();
+			String input = in.nextLine(); // This line will throw an exception if client abrupts connection.
 			super.notifyReceipt(input);
 		}
 	}
