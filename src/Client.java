@@ -4,6 +4,9 @@ import java.util.*;
 
 public class Client {
      public static void main(String[] args) {
+         String[] input = {"testing", "some", "stuff"};
+         System.out.println(String.join(" ", input));
+         /*
      try {
         System.out.println("Client attempting to connect..");
         Socket sock = new Socket("localhost", 7887); // Connect to server
@@ -17,6 +20,6 @@ public class Client {
         }
     } catch (IOException ex) {
         System.out.println(ex.getMessage());
-     }
+     }*/
  }   
 }

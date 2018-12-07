@@ -3,19 +3,31 @@ package client;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
- * The driver for a Battleship client. 
+ * The driver for a Battleship client to play the BattleShip game.
  * @author Kevin Filanowski
  * @author Jeriah Caplinger
- * @version November 2018
+ * @version December 2018
  */
 public class BattleDriver {
 	/** A client to play the Battleship game and to connect to BattleServer. */
-	BattleClient client;
+	private BattleClient client;
 	/** Scanner to read input from the keyboard. */
-	Scanner in;
+	private Scanner in;
+	/** Argument length requirement for the /join command. */
+	private final int JOIN_LENGTH = 2;
+	/** Argument length requirement for the /attack command. */
+	private final int ATTACK_LENGTH = 4;
+	/** Argument length requirement for the /play command. */
+	private final int PLAY_LENGTH = 1;
+	/** Argument length requirement for the /show command. */
+	private final int SHOW_LENGTH = 2;
+	/** Argument length requirement for the /quit command. */
+	private final int QUIT_LENGTH = 1;
+
 
 	/**
 	 * Constructor for a Battle Driver. Creates a client.
@@ -41,41 +53,60 @@ public class BattleDriver {
 
 	/**
 	 * Parses input from the keyboard and sends them to the client.
+	 * Also ensures that the correct number of arguments are sent,
+	 * while type checking certain arguments.
+	 * @throws InputMismatchException - Thrown if an integer-required command
+	 * 						 			line argument is not an integer.
 	 */
-	private void parseInput() {
-		// For now, let's just send anything that the client writes.
-		System.out.println("Ready for input!");
+	private void parseInput() throws InputMismatchException {
+		// Holds the command lin arguments.
+		String[] input;
+
 		while (true) {
-			client.send(in.nextLine());
-		}
-
-		/*while (true) {
-			System.out.println("Listening for client input:");
-			String input = in.next();
-
-			switch (input) {
+			// Read in command line arguments.
+			input = in.next().toLowerCase().split(" ");
+			switch (input[0]) {
 			case "/join": {
-				
+				if (checkInputLength(input, JOIN_LENGTH)) {
+					client.send(String.join(" ", input));
+				}
 			} break;
 			case "/attack": {
-
-			}
-			break;
+				if (checkInputLength(input, ATTACK_LENGTH)) {
+					Integer.parseInt(input[ATTACK_LENGTH - 1]);
+					Integer.parseInt(input[ATTACK_LENGTH - 2]);
+				}
+			} break;
 			case "/play": {
-
-			}
-			break;
+				if (checkInputLength(input, PLAY_LENGTH)) {
+					client.send(input[0]);
+				}
+			} break;
 			case "/show": {
-
-			}
-			break;
+				if (checkInputLength(input, SHOW_LENGTH)) {
+					client.send(String.join(" ", input));
+				}
+			} break;
 			case "/quit": {
-
-			}
-			break;
+				if (checkInputLength(input, QUIT_LENGTH)) {
+					client.send(input[0]);
+				}
+			} break;
 			default: System.out.println("Invalid command: " + input);
 			}
-		}*/
+		}
+	}
+
+	/**
+	 * Checks the number of arguments of the input string with the required
+	 * number of arguments needed for a specific command.
+	 * @param input - The input string containing arguments.
+	 * @param length - The length to check.
+	 * @return True if the amount of arguments that input has matches the
+	 *         length parameter. False otherwise.
+	 */
+	private boolean checkInputLength(String[] input, int length) {
+		return input.length == length;
 	}
 
 	/**
