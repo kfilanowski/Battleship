@@ -107,7 +107,6 @@ public class BattleServer implements MessageListener {
 	 */
 	public void listen() {
 
-
 	}
 
 
@@ -241,7 +240,11 @@ public class BattleServer implements MessageListener {
 	private void joinCommand(String[] command, ConnectionAgent agent){
 		if(!game.isGameStarted()) {
 			String name = command[1];
-			System.out.println(name);
+			int number = 1;
+			while(agents.containsKey(name)){
+				name = name + number;
+				number++;
+			}
 			agents.put(name, agent);
 			usernames.add(name);
 		}else{
@@ -258,7 +261,7 @@ public class BattleServer implements MessageListener {
 	 */
 	private void playCommand(String[] command, ConnectionAgent agent){
 		// if we have enough players and the game is not already started
-		if(agents.size() >= 2 && game.isGameStarted()){
+		if(agents.size() >= 2 && !game.isGameStarted()){
 			// we start the game
 			game.setGameStarted(true);
 			// adds each player username to game.addPlayer()
@@ -271,7 +274,7 @@ public class BattleServer implements MessageListener {
 		}else if(agents.size() < 2 && game.isGameStarted()){
 			agent.sendMessage("Not enough players to play the game");
 			// if the game is already started
-		}else if(!game.isGameStarted()){
+		}else if(game.isGameStarted()){
 			agent.sendMessage("Game already in progress");
 		}
 	}
@@ -283,11 +286,14 @@ public class BattleServer implements MessageListener {
 	 */
 	private void showCommand(String[] command, ConnectionAgent agent) {
 		if (game.isGameStarted() && agents.containsKey(command[1])) {
+
 			if (findUsername(agent).equalsIgnoreCase(command[1])) {
 				agent.sendMessage(game.getPrivateGrid(command[1]));
-			} else {
+			}
+			else {
 				agent.sendMessage(game.getPublicGrid(command[1]));
 			}
+
 		} else if (!game.isGameStarted()) {
 			agent.sendMessage("Game not in progress");
 		} else {
@@ -303,7 +309,9 @@ public class BattleServer implements MessageListener {
 	 * @return The username attached to this ConnectionAgent.
 	 */
 	private String findUsername(ConnectionAgent agent) {
+		System.out.println("Socket for agent is: " + agent.getSocket().getPort());
 		for (String key : agents.keySet()) {
+			System.out.println("Socket for for loop is: " + agents.get(key).getSocket().getPort());
 			if (agents.get(key).getSocket().getLocalPort()
 			== agent.getSocket().getLocalPort()) {
 				return key;
