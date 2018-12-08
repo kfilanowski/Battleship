@@ -9,11 +9,12 @@ import common.MessageListener;
 import common.MessageSource;
 
 /**
- * The Client that is responsible for connecting to its connection agent
+ * The client that is responsible for connecting to its connection agent
  * to communicate with the server. Passes along messages.
+ * 
  * @author Kevin Filanowski
  * @author Jeriah Caplinger
- * @version November 2018
+ * @version December 2018
  */
 public class BattleClient extends MessageSource implements MessageListener {
 	/** The address of the server to connect to. */
@@ -27,6 +28,7 @@ public class BattleClient extends MessageSource implements MessageListener {
 	
 	/**
 	 * Constructor for a client in the BattleShip game.
+	 * 
 	 * @param host     - A string representation of the host name.
 	 * @param port 	   - The port number to connect on the server.
 	 * @param username - The username of the player.
@@ -51,8 +53,8 @@ public class BattleClient extends MessageSource implements MessageListener {
 		this.host = host;
 		this.port = port;
 		this.username = username;
-		// Lets the client's connection agent add the client to the agent's list
-		// of message listeners to notify.
+		// Lets the client's ConnectionAgent add the client to the agent's
+		// list of message listeners to notify.
 		this.agent = new ConnectionAgent(new Socket(this.host, port));
 		this.agent.addMessageListener(this);
 		// Throw it in a thread and start it.
@@ -60,18 +62,24 @@ public class BattleClient extends MessageSource implements MessageListener {
 	}
 	
 	/**
-	 * Sends a join command to the BattleServer.
+	 * Sends a /join command to the BattleServer.
 	 */
 	public void connect() {
 		send("/join " + username);
 	}
 
+	/**
+	 * Tells the ConnectionAgent to close the connection with the server.
+	 */
 	public void close() {
 		agent.close();
 	}
 
 	/**
+	 * Checks if the ConnectionAgent is currently connected with the server.
 	 * 
+	 * @return True if the socket is connected to the server socket.
+	 *         False otherwise.
 	 */
 	public boolean isConnected() {
 		return agent.isConnected();
@@ -79,6 +87,7 @@ public class BattleClient extends MessageSource implements MessageListener {
 	
 	/**
 	 * Prints the message received from its ConnectionAgent.
+	 * 
 	 * @param message - The message recieved from the MessageSource.
 	 * @param source  - The source of the message that it came from.
 	 */

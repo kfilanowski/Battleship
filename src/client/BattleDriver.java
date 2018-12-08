@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 /**
  * The driver for a Battleship client to play the BattleShip game.
+ * 
  * @author Kevin Filanowski
  * @author Jeriah Caplinger
  * @version December 2018
@@ -30,6 +31,7 @@ public class BattleDriver {
 
 	/**
 	 * Constructor for a Battle Driver. Creates a client.
+	 * 
 	 * @param host - The hostname of the server to connect to.
 	 * @param port - The port number to connect to.
 	 * @param username - The username of the player.
@@ -51,20 +53,23 @@ public class BattleDriver {
 	}
 
 	/**
+	 * Prints a message to the client that the commad is invalid.
 	 * 
-	 * @param command
+	 * @param command - The command that the user attempted to use.
 	 */
 	private final void printInvalidCommand(String command) {
 		System.out.println("Invalid command: " + command);
 	}
 
 	/**
-	 * Parses input from the keyboard and sends them to the client.
+	 * Parses input from the keyboard and sends them to the client to send
+	 * to the server through the network. Maintains the input untill the
+	 * the connection is closed.
 	 * Also ensures that the correct number of arguments are sent,
-	 * while type checking certain arguments.
+	 * while type checking integer arguments.
 	 */
 	private void parseInput() {
-		// Holds the command lin arguments.
+		// Holds the command line arguments.
 		String[] input;
 
 		while (client.isConnected()) {
@@ -118,7 +123,8 @@ public class BattleDriver {
 	/**
 	 * Checks the number of arguments of the input string with the required
 	 * number of arguments needed for a specific command.
-	 * @param input - The input string containing arguments.
+	 * 
+	 * @param input  - The input string containing arguments.
 	 * @param length - The length to check.
 	 * @return True if the amount of arguments that input has matches the
 	 *         length parameter. False otherwise.
@@ -130,6 +136,7 @@ public class BattleDriver {
 	/**
 	 * The main driver of a client program. Attempts to communicate with
 	 * the server.
+	 * 
 	 * @param args - Command line arguments, which include:
 	 * 				 hostname, port number, and user nickname.
 	 *               All are required.

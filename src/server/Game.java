@@ -68,8 +68,8 @@ public class Game {
 	}
 
 	/**
-	 * Sets the gameStarted variable to true or false
-	 * @param gameStarted
+	 * Sets the gameStarted flag to true or false
+	 * @param gameStarted True if the game has been started, false otherwise.
 	 */
 	protected void setGameStarted(boolean gameStarted) {
 		this.gameStarted = gameStarted;
@@ -104,7 +104,7 @@ public class Game {
 	 * @throws GameOverException - Thrown when the game ends by sinking all ships.
 	 */
 	protected Boolean shoot(String username, int x, int y) throws
-			CoordinateOutOfBoundsException, IllegalCoordinateException, GameOverException {
+		CoordinateOutOfBoundsException, IllegalCoordinateException, GameOverException {
 		if (x >= gridSize || x < 0) {
 			// Tells the client that this coordinate was out of bounds.
 			throw new CoordinateOutOfBoundsException(); 

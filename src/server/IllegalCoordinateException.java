@@ -15,7 +15,8 @@ public class IllegalCoordinateException extends Exception {
      * Default constructor with no parameters.
      */
     public IllegalCoordinateException() {
-        super();
+        super("Coordinates were already attacked." 
+           + "\nPlease pick another set of coordinates to attack.");
     }
 
     /**

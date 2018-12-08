@@ -9,15 +9,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * BattleServer processes client requests for the BattleShip Game.
+ * 
  * @author Kevin Filanowski
  * @author Jeriah Caplinger
- * @version November 2018
+ * @version December 2018
  */
 public class BattleServer implements MessageListener {
 	/** The default port for the server. */
@@ -50,6 +50,7 @@ public class BattleServer implements MessageListener {
 	/**
 	 * Constructor for BattleServer with a specified port.
 	 * Uses the default size.
+	 * 
 	 * @param port - The port number to run the battleship server on.
 	 */
 	public BattleServer(int port) throws IOException {
@@ -58,16 +59,14 @@ public class BattleServer implements MessageListener {
 		agents = new HashMap<String, ConnectionAgent>();
 		usernames = new ArrayList<String>();
 		serverSocket = new ServerSocket(port);
-
-
 		Thread acceptSockets = new Thread(new ServerAcceptThread());
 		acceptSockets.start();
-		//this.ourMessageAgent = new ConnectionAgent(null);
 	}
 	
 	/**
 	 * Constructor for BattleServer with a specified port and size.
-	 * @param port - The port number to run the battleship server on.
+	 * 
+	 * @param port 	   - The port number to run the battleship server on.
 	 * @param gridSize - The size of the game board.
 	 */
 	public BattleServer(int port, int gridSize) throws IOException {
@@ -76,22 +75,22 @@ public class BattleServer implements MessageListener {
 		agents = new HashMap<String, ConnectionAgent>();
 		usernames = new ArrayList<String>();
 		serverSocket = new ServerSocket(port);
-
-
 		Thread acceptSockets = new Thread(new ServerAcceptThread());
 		acceptSockets.start();
 	}
 
 	/**
-	 * Clamps the gridSize between the minimum and maximum value. This serves two
-	 * purposes: 1) Forces the grid to be larger than a ship, since it would be not
-	 * be possible to place a ship of size 5 into a grid of size 4. 2) Forces the
-	 * grid to be within reasonable size to prevent out of memory erorrs by creating
-	 * a gridsize too large.
+	 * Clamps the gridSize between the minimum and maximum value.
+	 * This serves two purposes:
+	 * 1) Forces the grid to be larger than a ship, since it would be not
+	 *    be possible to place a ship of size 5 into a grid of size 4.
+	 * 2) Forces the grid to be within reasonable size to prevent out of 
+	 *    memory erorrs by creating a gridsize too large.
+	 * 
 	 * @param gridSize - The gridSize specified by the command line args.
-	 * @return - The gridSize, clamped between the minimum and maximum value. If
-	 *         MIN_GRID_SIZE <= gridSize <= MAX_GRID_SIZE, then gridSize does not
-	 *         change.
+	 * @return The gridSize, clamped between the minimum and maximum value.
+	 *         If MIN_GRID_SIZE <= gridSize <= MAX_GRID_SIZE, 
+	 *		   then the gridSize does not change.
 	 */
 	private final int clamp(int gridSize) {
 		if (gridSize < MIN_GRID_SIZE) {
@@ -106,97 +105,128 @@ public class BattleServer implements MessageListener {
 	 * 
 	 */
 	public void listen() {
-
+		// what does this even do? should we just use listen instead of addConnectAgent?
 	}
 
-
 	/**
+	 * Adds the BattleServer as a listener to a specified subject.
 	 * 
-	 * @param agent
+	 * @param agent - The agent that will update it's listeners with messages.
 	 */
 	protected void addConnectAgent(ConnectionAgent agent){
 		agent.addMessageListener(this);
-
-		//String[] userNameArray = user.split(" ");
-		//String name = userNameArray[1];
-		//System.out.println(name);
-
-		//agents.put(name, agent);
-
 	}
 
 	/**
-	 * 
+	 * Causes the player's turn to pass on to the next player, and cycle
+	 * back to the front if we have reached the last player.
 	 */
 	private void nextTurn() {
-		if (current >= usernames.size()) {
+		if (current >= usernames.size()-1) {
 			current = 0;
 		} else {
 			current++;
 		}
+		broadcast(usernames.get(current) + " it is your turn.");
 	}
 
-
 	/**
+	 * Parses the command that the server recieved, and decides what to do
+	 * with that command. There are 5 commands:
+	 * /join: Allows a new player to join the game, given that the game
+	 *        has not already started.
+	 * /play: Starts the game by assigning a random grid to each user, and
+	 *        opens up the other commands for usage.
+	 * /attack: Attacks a specified player's coordinates.
+	 * /quit: Gracefully exits the game.
+	 * /show: Displays the specified user's game board, revealing ships only
+	 *        if it is your own board.
 	 * 
-	 * @param message
-	 * @param agent
+	 * @param message - The message sent to the server to parse.
+	 * @param agent - The ConnectionAgent that sent this message.
+	 * @throws CoordinateOutOfBoundsException - Thrown if the coordinates
+	 * 											specified are not on the grid.
+	 * @throws IllegalCoordinateException - Thrown if the specified player has
+	 * 										already been attacked at the
+	 * 										specified coordinates.
+	 * @throws InputMismatchException - Thrown if the coordinates are not
+	 * 									valid integers.
+	 * @throws GameOverException - Thrown if the game ends. A game ends when
+	 * 							   all of a player's ships are destroyed.
 	 */
 	private void parseCommands(String message, ConnectionAgent agent) throws
 	 		CoordinateOutOfBoundsException, IllegalCoordinateException, 
 	 		InputMismatchException, GameOverException {
 		String[] command = message.split(" ");
 		switch(command[0]) {
-			case "/join":
-				joinCommand(command, agent);
-				break;
-			case "/play":
-				playCommand(command, agent);
-				break;
-			case "/attack":
-				attackCommand(command, agent);
-				break;
-			case "/quit":
-				quitCommand(agent);
-				break;
-			case "/show":
-				showCommand(command, agent);
-				break;
+			case "/join":   joinCommand(command, agent);   break;
+			case "/play":   playCommand(command, agent);   break;
+			case "/attack": attackCommand(command, agent); break;
+			case "/show":   showCommand(command, agent);   break;
+			case "/quit":   quitCommand(agent);            break;
 		}
 	}
 
-
 	/**
+	 * The logic behind the /attack command. Given that it is the player's turn,
+	 * /attack attacks the specified player's coordinates.
 	 * 
-	 * @param command
-	 * @param agent
+	 * @param command - The arguments sent to the server from the client.
+	 * @param agent   - The ConnectionAgent that sent this message.
+	 * @throws CoordinateOutOfBoundsException - Thrown if the coordinates 
+	 * 											specified are not on the grid.
+	 * @throws IllegalCoordinateException - Thrown if the specified player has
+	 *                                      already been attacked at the 
+	 *                                      specified coordinates.
+	 * @throws InputMismatchException - Thrown if the coordinates are not
+	 *                                  valid integers.
+	 * @throws GameOverException - Thrown if the game ends. A game ends
+	 *                             when all of a player's ships are destroyed.
 	 */
 	private void attackCommand(String[] command, ConnectionAgent agent) throws
 	CoordinateOutOfBoundsException, IllegalCoordinateException, InputMismatchException,
 	GameOverException {
-		if(game.isGameStarted() && agents.containsKey(command[1])){
-			if (usernames.get(current).equals(command[1]) ) {
-				game.shoot(command[1], Integer.parseInt(command[2]),
-										 Integer.parseInt(command[3]));
+		// Holds the username of the current player.
+		String username = findUsername(agent);
+		// Holds the result of a hit or miss to that player.
+		boolean hitOrMiss;
+		if (game.isGameStarted() && agents.containsKey(command[1])) {
+			if (usernames.get(current).equals(username) 
+				&& !username.equals(command[1])) {
+				hitOrMiss = game.shoot(command[1], 
+				Integer.parseInt(command[2]), Integer.parseInt(command[3]));
+				broadcast("Shots fired at " + command[1] + " by " + username);
+				broadcast("Did the shot hit?: " + hitOrMiss);
 				nextTurn();
+			} else if (username.equals(command[1])) {
+				agent.sendMessage("You cannot attack yourself. Try again.");
 			} else {
 				agent.sendMessage("Sorry, it is currently not your turn.");
 			}
-		} else if(!game.isGameStarted()){
+		} else if (!game.isGameStarted()){
 			agent.sendMessage("Game not in progress");
-		}else if(!agents.containsKey(command[1])){
+		} else if (!agents.containsKey(command[1])){
 			agent.sendMessage(command[1] + " is not a valid player.");
-			agent.sendMessage(printValidUsers(agent));
+			agent.sendMessage(printValidUsers());
 		}
 	}
 
-	private void quitCommand(ConnectionAgent agent) {
+	/**
+	 * The logic behind the /quit command. Closes the connections to and from the
+	 * specified user.
+	 * 
+	 * @param agent - The ConnectionAgent to stop communicating with.
+	 * @throws GameOverException - Thrown if the game ends. A game ends when
+	 *                             all of a player's ships are destroyed.
+	 */
+	private void quitCommand(ConnectionAgent agent) throws GameOverException {
 		// we close the client's connection agent
 		agent.close();
 		// we get the user name of the client
 		String agentsName = findUsername(agent);
 		// if it is not null
 		if (!agentsName.equals("")) {
+			nextTurn();
 			// we remove them from the game list
 			game.removePlayer(agentsName);
 			// we remove them from our connection agent hash map
@@ -204,14 +234,15 @@ public class BattleServer implements MessageListener {
 			// Remove the username from the list of turns.
 			usernames.remove(agentsName);
 			// we tell everyone the player has left
-			broadcast(agentsName + " left the game.");
+			broadcast(agentsName + " surrendered.");
 		}
 		// if the game has started and there is only one player left
-		if (game.getTotalPlayers() == 1 && !game.isGameStarted()) {
+		if (game.getTotalPlayers() == 1 && game.isGameStarted()) {
 			// we tell the player that the game is ending because there is only one player
 			broadcast("You are the only player.. Game is ending.");
+			game.setGameStarted(false);
 			// we find that single user's name
-			for (String agent1 : agents.keySet()) {
+			for (String agent1 : agents.keySet()) { // TODO: we need to actually close the connection
 				// we remove the agent from our connection agent hash map
 				agents.remove(agent1);
 				// we remove that player from the game grid list
@@ -220,9 +251,17 @@ public class BattleServer implements MessageListener {
 				usernames.remove(agentsName);
 			}
 		}
+		//if (usernames.size() == 1 && game.isGameStarted()) {
+		//	throw new GameOverException("You won!");
+		//}
 	}
 
-	private String printValidUsers(ConnectionAgent agent) {
+	/**
+	 * Prints the registered users that are currently in the game.
+	 * 
+	 * @return A formatted string of the registered users in the game.
+	 */
+	private String printValidUsers() {
 		StringBuilder sendThis = new StringBuilder();
 		sendThis.append("Valid Users Are:\n");
 		for (String user : agents.keySet()) {
@@ -231,14 +270,15 @@ public class BattleServer implements MessageListener {
 		return sendThis.toString();
 	}
 
-
 	/**
+	 * The logic behind the /join command. Registers a user to the server.
 	 * 
-	 * @param command
-	 * @param agent
+	 * @param command - The command arguments sent by the client.
+	 * @param agent   - The client's ConnectionAgent that sent the message.
 	 */
 	private void joinCommand(String[] command, ConnectionAgent agent){
-		if(!game.isGameStarted()) {
+		String joined = findUsername(agent);
+		if(!game.isGameStarted() && joined.equals("")) {
 			String name = command[1];
 			int number = 1;
 			while(agents.containsKey(name)){
@@ -247,17 +287,22 @@ public class BattleServer implements MessageListener {
 			}
 			agents.put(name, agent);
 			usernames.add(name);
-		}else{
-			agent.sendMessage("Game is already begun... Sorry.. You are being kicked..." +
-					" :)");
+			broadcast("!!! " + name + " has joined.");
+		}else if (game.isGameStarted() && joined.equals("")){
+			agent.sendMessage("Game is already begun... Sorry.. "
+			 + "You are being kicked... :)");
 			agent.close();
+		} else if (!joined.equals("")){
+			agent.sendMessage("You are already joined.");
 		}
 	}
 
+	
 	/**
+	 * The logic behind the /play command. Starts the game.
 	 * 
-	 * @param command
-	 * @param agent
+	 * @param command - The command arguments sent by the client.
+	 * @param agent   - The client's ConnectionAgent that sent the message.
 	 */
 	private void playCommand(String[] command, ConnectionAgent agent){
 		// if we have enough players and the game is not already started
@@ -269,10 +314,11 @@ public class BattleServer implements MessageListener {
 				game.addPlayer(user);
 			}
 			// tell everyone the game has started
-			broadcast("The game begins");
+			broadcast("The game begins!");
+			broadcast(usernames.get(current) + " it is your turn.");
 			// 	if we do not have enough players and the game is not already started
 		}else if(agents.size() < 2 && !game.isGameStarted()){
-			agent.sendMessage("Not enough players to play the game");
+			agent.sendMessage("Not enough players to play the game.");
 			// if the game is already started
 		}else if(game.isGameStarted()){
 			agent.sendMessage("Game already in progress");
@@ -280,42 +326,36 @@ public class BattleServer implements MessageListener {
 	}
 
 	/**
+	 * The logic being the /show command. Outputs a specific player's
+	 * grid specified by the client's command request.
 	 * 
-	 * @param command
-	 * @param agent
+	 * @param command - The command arguments sent by the client.
+	 * @param agent   - The client's ConnectionAgent that sent the message.
 	 */
 	private void showCommand(String[] command, ConnectionAgent agent) {
 		if (game.isGameStarted() && agents.containsKey(command[1])) {
-
 			if (findUsername(agent).equalsIgnoreCase(command[1])) {
 				agent.sendMessage(game.getPrivateGrid(command[1]));
-			}
-			else {
+			} else {
 				agent.sendMessage(game.getPublicGrid(command[1]));
 			}
-
 		} else if (!game.isGameStarted()) {
 			agent.sendMessage("Game not in progress");
 		} else {
 			agent.sendMessage("Invalid user: " + command[1]);
-			agent.sendMessage(printValidUsers(agent));
+			agent.sendMessage(printValidUsers());
 		}
 	}
 
-
 	/**
 	 * Finds the username to a given ConnectionAgent.
+	 * 
 	 * @param agent - The ConnectionAgent.
 	 * @return The username attached to this ConnectionAgent.
 	 */
 	private String findUsername(ConnectionAgent agent) {
-		System.out.println(agent.getSocket().getLocalPort());
-		System.out.println("Socket for agent is: " + agent.getSocket().getPort());
 		for (String key : agents.keySet()) {
-			System.out.println("Socket for for loop is: " + agents.get(key).getSocket().getPort());
-			System.out.println(key + " " + agents.get(key).getSocket().getLocalPort());
-			if (agents.get(key).getSocket().getLocalPort()
-			== agent.getSocket().getLocalPort()) {
+			if (agents.get(key) == agent) {
 				return key;
 			}
 		}
@@ -323,34 +363,36 @@ public class BattleServer implements MessageListener {
 	}
 	
 	/**
+	 * Called when a new message is recieved from any of the clients.
 	 * 
-	 * @param message
-	 * @param source
+	 * @param message - The message the server recieves from a client.
+	 * @param source  - The messageSource that sent the message.
 	 */
 	public void messageReceived(String message, MessageSource source) {
 		try {
 			parseCommands(message, (ConnectionAgent)source);
 		} catch (CoordinateOutOfBoundsException ex) {
-			((ConnectionAgent) source).sendMessage("Coordinate's specified are out of bounds.");
+			((ConnectionAgent) source).sendMessage(ex.getMessage());
 		} catch (IllegalCoordinateException ex) {
- 			((ConnectionAgent) source).sendMessage("Coordinates were already attacked. ");
+			((ConnectionAgent) source).sendMessage(ex.getMessage());
 		} catch (GameOverException ex) {
-			((ConnectionAgent) source).sendMessage("Game Over!");
+			broadcast(ex.getMessage());
+			game.setGameStarted(false);
 		} catch (InputMismatchException ex) {
 			System.out.println(ex.getMessage());
 		}
 	}
 
 	/**
+	 * Sends a message to all clients connected to the server.
 	 * 
-	 * @param message
+	 * @param message - The message to send to every client registered.
 	 */
 	public void broadcast(String message) {
 		for(ConnectionAgent agent: agents.values()){
 			agent.sendMessage(message);
 		}
 	}
-
 
 	/**
 	 * 
@@ -360,16 +402,7 @@ public class BattleServer implements MessageListener {
 
 	}
 
-
-	/**
-	 * 
-	 * @return
-	 */
-	protected ServerSocket getServerSocket(){
-		return this.serverSocket;
-	}
-
-
+	/*
 	// TESTS GAMEPLAY. Delete this later.
 	public void testGameplay() {
 		Scanner in = new Scanner(System.in);
@@ -411,11 +444,9 @@ public class BattleServer implements MessageListener {
 			}
 		} while (true);
 	}
+	*/
 
-	/**
-	 * Gives the user options for demonstration purposes
-	 * @param in scanner connected to the keyboard
-	 */
+	/*
 	private void options(Scanner in){
 		boolean go = true;
 		String result = "";
@@ -438,7 +469,7 @@ public class BattleServer implements MessageListener {
 			}
 		}
 	}
-
+	*/
 
 	/**
 	 * This class will be a seperate Thread that accepts clients connecting to
@@ -452,24 +483,21 @@ public class BattleServer implements MessageListener {
 	 */
 	private class ServerAcceptThread implements Runnable {
 		/**
-		 * Our Thread method. This thread constantly waits for player's joining the
-		 * game. It then gives that connection to the BattleServer
+		 * Our Thread method. This thread constantly waits for player's joining
+		 * the game. It then gives that connection to the BattleServer.
 		 */
 		@Override
 		public void run() {
-			// while the server socket is not closed
 			while (!serverSocket.isClosed()) {
 				try {
-					// we accept the client's connection
 					Socket socket = serverSocket.accept();
-					// We make a new connection agent for this socket
 					ConnectionAgent agent = new ConnectionAgent(socket);
-					// We pass the connection agent to battle server
+					// We pass the connection agent to battle server.
 					addConnectAgent(agent);
-					// We start the connection agent up as a thread
+					// We start the connection agent up as a thread.
 					(new Thread(agent)).start();
 				} catch (IOException ioe) {
-					System.out.println("Caught IOException in serverAcceptThread run method");
+					System.out.println("Caught IOException.");
 				}
 			}
 		}

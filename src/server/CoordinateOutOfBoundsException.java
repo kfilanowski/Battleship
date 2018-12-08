@@ -14,7 +14,8 @@ public class CoordinateOutOfBoundsException extends Exception {
      * Default constructor with no parameters.
      */
     public CoordinateOutOfBoundsException() {
-        super();
+        super("Coordinate's are not on the game board." 
+        + "\nPlease pick another set of coordinates to attack.");
     }
 
     /**

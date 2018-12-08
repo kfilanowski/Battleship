@@ -15,7 +15,7 @@ public class GameOverException extends Exception {
      * Default constructor for the exception with no parameters.
      */
     public GameOverException() {
-        super();
+        super("Game Over!");
     }
 
     /**

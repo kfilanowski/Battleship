@@ -1,19 +1,11 @@
-Potential issues we will need to check for, for the sake of robustness:
-usernames are valid when players /attack them, or /show them.
-users cannot /attack and other certain commands before game starts
-check if at least two players exist to play the game.
-if the player requests their own grid, it is the private one. (Although I don't see why we can't choose public/private)
+ISSUES:
+
+- abruptly leaving while in-game does not remove the player from the match.
+  (from turns or anything. their grid still exists.)
+
+- game needs to say who won
+
+- game does not end when all players but the last quit
 
 
-
-Questions:
-max number of players?
-max grid size?
-
-
-
-
-
----we need to close threads in server when player leaves or w/e. or is that how it even works?
-
-make sure that if the player doesnt give the correct coordinates, they get another turn
+-?? we need to close threads in server when player leaves or w/e. or is that how it even works?
