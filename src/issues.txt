@@ -1,11 +1,8 @@
 ISSUES:
 
-- abruptly leaving while in-game does not remove the player from the match.
-  (from turns or anything. their grid still exists.)
+- game needs to say who won THEN kick everyone off server or allow players to restart
 
-- game needs to say who won
+- issue when a it's a player's turn and that player abruptly quits, the next turn does not go to the next person
+  in line (occurs whether it is a regular "/quit" or an abrupt quit).
 
-- game does not end when all players but the last quit
-
-
--?? we need to close threads in server when player leaves or w/e. or is that how it even works?
+- Not an issue, but we need to incorporate PrintStreamMessageListener in client-side of Battleship
