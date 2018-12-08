@@ -161,21 +161,10 @@ public class BattleServer implements MessageListener {
 			case "/attack": attackCommand(command, agent); break;
 			case "/show":   showCommand(command, agent);   break;
 			case "/quit":   quitCommand(agent);            break;
-			case "/checkAll": checkAllComm(); 				break;
 		}
 	}
 
-
-	private void checkAllComm(){
-
-		for(String agent : this.agents.keySet()){
-			// if the connection agent is closed
-			if(this.agents.get(agent).isConnected()){
-				System.out.println("Found an abrupt quit");
-			}
-		}
-	}
-
+	
 	/**
 	 * The logic behind the /attack command. Given that it is the player's turn,
 	 * /attack attacks the specified player's coordinates.
