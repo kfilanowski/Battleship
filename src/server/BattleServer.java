@@ -7,10 +7,7 @@ import common.ConnectionAgent;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.InputMismatchException;
-import java.util.Scanner;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * BattleServer processes client requests for the BattleShip Game.
@@ -164,6 +161,18 @@ public class BattleServer implements MessageListener {
 			case "/attack": attackCommand(command, agent); break;
 			case "/show":   showCommand(command, agent);   break;
 			case "/quit":   quitCommand(agent);            break;
+			case "/checkAll": checkAllComm(); 				break;
+		}
+	}
+
+
+	private void checkAllComm(){
+
+		for(String agent : this.agents.keySet()){
+			// if the connection agent is closed
+			if(this.agents.get(agent).isConnected()){
+				System.out.println("Found an abrupt quit");
+			}
 		}
 	}
 
@@ -220,6 +229,7 @@ public class BattleServer implements MessageListener {
 	 *                             all of a player's ships are destroyed.
 	 */
 	private void quitCommand(ConnectionAgent agent) throws GameOverException {
+		System.out.println("Beginning quit command");
 		// we close the client's connection agent
 		agent.close();
 		// we get the user name of the client
@@ -239,10 +249,11 @@ public class BattleServer implements MessageListener {
 		// if the game has started and there is only one player left
 		if (game.getTotalPlayers() == 1 && game.isGameStarted()) {
 			// we tell the player that the game is ending because there is only one player
-			broadcast("You are the only player.. Game is ending.");
+			broadcast("You are the only player.. Game is ending.\nEnter any key to exit\n");
 			game.setGameStarted(false);
 			// we find that single user's name
-			for (String agent1 : agents.keySet()) { // TODO: we need to actually close the connection
+			for (String agent1 : agents.keySet()) {
+				agents.get(agent1).close();
 				// we remove the agent from our connection agent hash map
 				agents.remove(agent1);
 				// we remove that player from the game grid list
@@ -251,6 +262,7 @@ public class BattleServer implements MessageListener {
 				usernames.remove(agentsName);
 			}
 		}
+		System.out.println("Quit command completed");
 		//if (usernames.size() == 1 && game.isGameStarted()) {
 		//	throw new GameOverException("You won!");
 		//}
@@ -290,7 +302,7 @@ public class BattleServer implements MessageListener {
 			broadcast("!!! " + name + " has joined.");
 		}else if (game.isGameStarted() && joined.equals("")){
 			agent.sendMessage("Game is already begun... Sorry.. "
-			 + "You are being kicked... :)");
+			 + "You are being kicked... :)\nEnter any key to exit\n");
 			agent.close();
 		} else if (!joined.equals("")){
 			agent.sendMessage("You are already joined.");
@@ -395,11 +407,43 @@ public class BattleServer implements MessageListener {
 	}
 
 	/**
-	 * 
+	 * Tells us when a client has abruptly quit and handles it accordingly
 	 * @param source
 	 */
 	public void sourceClosed(MessageSource source) {
 
+		// we need to get our connection agent from the source
+		ConnectionAgent agent = (ConnectionAgent) source;
+		// we find which connection agent is closed
+		String agentsName = findUsername(agent);
+		// if it is not null
+		if (!agentsName.equals("")) {
+			nextTurn();
+			// we remove them from the game list
+			game.removePlayer(agentsName);
+			// we remove them from our connection agent hash map
+			agents.remove(agentsName);
+			// Remove the username from the list of turns.
+			usernames.remove(agentsName);
+			// we tell everyone the player has left
+			broadcast(agentsName + " surrendered.");
+		}
+		// if the game has started and there is only one player left
+		if (game.getTotalPlayers() == 1 && game.isGameStarted()) {
+			// we tell the player that the game is ending because there is only one player
+			broadcast("You are the only player.. Game is ending.\nEnter any key to exit\n");
+			game.setGameStarted(false);
+			// we find that single user's name
+			for (String agent1 : agents.keySet()) {
+				agents.get(agent1).close();
+				// we remove the agent from our connection agent hash map
+				agents.remove(agent1);
+				// we remove that player from the game grid list
+				game.removePlayer(agent1);
+				// remove the username from the list of turns
+				usernames.remove(agentsName);
+			}
+		}
 	}
 
 	/*
