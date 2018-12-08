@@ -1,8 +1,3 @@
 ISSUES:
 
-- game needs to say who won THEN kick everyone off server or allow players to restart
-
-- issue when a it's a player's turn and that player abruptly quits, the next turn does not go to the next person
-  in line (occurs whether it is a regular "/quit" or an abrupt quit).
-
 - Not an issue, but we need to incorporate PrintStreamMessageListener in client-side of Battleship
