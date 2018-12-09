@@ -1,6 +1,7 @@
 package client;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Scanner;
@@ -37,10 +38,10 @@ public class BattleDriver {
 	 * @throws UnknownHostException - Thrown if the hostname could not
 	 * 								  resolve to an IP Address.
 	 */
-	public BattleDriver(InetAddress host, int port, String username)
-			throws UnknownHostException, IOException {
+	public BattleDriver(InetAddress host, int port, String username,
+	 			PrintStream out) throws UnknownHostException, IOException {
 		in = new Scanner(System.in);
-		client = new BattleClient(host, port, username);
+		client = new BattleClient(host, port, username, out);
 	}
 
 	/**
@@ -143,21 +144,26 @@ public class BattleDriver {
 	public static void main(String[] args) {
 		if (args.length < 3) {
 			printUsageAndExit();
-		}
-		try {
-			BattleDriver driver = new BattleDriver(
-								  InetAddress.getByName(args[0]),
-								  Integer.parseInt(args[1]), args[2]);
-			driver.client.connect();
-			driver.parseInput();
-		} catch (NumberFormatException ex) {
-			printUsageAndExit();
-		} catch (UnknownHostException ex) {
-			System.out.println(ex.getMessage());
-			printUsageAndExit();
-		} catch (IOException ex) {
-			System.out.println(ex.getMessage());
-			printUsageAndExit();
+		} else if (args.length == 4) {
+			/*BattleDriver driver = new BattleDriver(
+				InetAddress.getByName(args[0]), Integer.parseInt(args[1]),
+				 args[2], (PrintStream)args[3]);*/
+		} else {
+			try {
+				BattleDriver driver = new BattleDriver(
+							InetAddress.getByName(args[0]),
+							Integer.parseInt(args[1]), args[2], System.out);
+				driver.client.connect();
+				driver.parseInput();
+			} catch (NumberFormatException ex) {
+				printUsageAndExit();
+			} catch (UnknownHostException ex) {
+				System.out.println(ex.getMessage());
+				printUsageAndExit();
+			} catch (IOException ex) {
+				System.out.println(ex.getMessage());
+				printUsageAndExit();
+			}
 		}
 	}
 }

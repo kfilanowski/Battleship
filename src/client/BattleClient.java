@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.io.PrintStream;
 import common.ConnectionAgent;
 import common.MessageListener;
 import common.MessageSource;
@@ -25,6 +26,8 @@ public class BattleClient extends MessageSource implements MessageListener {
 	private String username;
 	/** Connection agent to communicate with the server. */
 	private ConnectionAgent agent;
+	/** The message listener printing output. */
+	PrintStreamMessageListener printer;
 	
 	/**
 	 * Constructor for a client in the BattleShip game.
@@ -36,9 +39,9 @@ public class BattleClient extends MessageSource implements MessageListener {
 	 * 								  found on the specified host name.
 	 * @throws IOException          - Thrown if some sort of I/O error occurs.
 	 */
-	public BattleClient(String host, int port, String username)
-			throws UnknownHostException, IOException {
-		this(InetAddress.getByName(host), port, username);
+	public BattleClient(String host, int port, String username, 
+				PrintStream out) throws UnknownHostException, IOException {
+		this(InetAddress.getByName(host), port, username, out);
 	}
 	
 	/**
@@ -48,8 +51,8 @@ public class BattleClient extends MessageSource implements MessageListener {
 	 * @param username - The username of the player.
 	 * @throws IOException - Thrown if some sort of I/O error occurs.
 	 */
-	public BattleClient(InetAddress host, int port, String username) 
-								throws IOException {
+	public BattleClient(InetAddress host, int port, String username,
+	 					PrintStream out) throws IOException {
 		this.host = host;
 		this.port = port;
 		this.username = username;
@@ -57,6 +60,8 @@ public class BattleClient extends MessageSource implements MessageListener {
 		// list of message listeners to notify.
 		this.agent = new ConnectionAgent(new Socket(this.host, port));
 		this.agent.addMessageListener(this);
+		printer = new PrintStreamMessageListener(out);
+		addMessageListener(printer);
 		// Throw it in a thread and start it.
 		new Thread(agent).start();
 	}
@@ -86,13 +91,14 @@ public class BattleClient extends MessageSource implements MessageListener {
 	}
 	
 	/**
-	 * Prints the message received from its ConnectionAgent.
+	 * Notifies the listeners to BattleClient of the message received
+	 * from BattleClient's ConnectionAgent, which is a message from the server.
 	 * 
 	 * @param message - The message recieved from the MessageSource.
 	 * @param source  - The source of the message that it came from.
 	 */
 	public void messageReceived(String message, MessageSource source) {
-		System.out.println(message);
+		notifyReceipt(message);
 	}
 	
 	/**
@@ -100,7 +106,7 @@ public class BattleClient extends MessageSource implements MessageListener {
 	 * @param MessageSource source - The MessageSource to close.
 	 */
 	public void sourceClosed(MessageSource source) {
-		((ConnectionAgent)source).close();
+		//what is this for?
 	}
 	
 	/**

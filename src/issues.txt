@@ -1,3 +1,6 @@
 ISSUES:
 
 - Not an issue, but we need to incorporate PrintStreamMessageListener in client-side of Battleship
+    * It seems that PrintStreamMessageListener is controlling the output. I incorporated it, but it defaults
+        to system.out. Unsure of how to change a String argument into a "PrintStream" object.
+

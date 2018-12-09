@@ -62,7 +62,10 @@ public class Game {
 		return gridList.get(username).getPublicGrid();
 	}
 
-
+	/**
+	 * Returns the number of total players playing the game.
+	 * @return The number of players in the game.
+	 */
 	protected int getTotalPlayers(){
 		return this.gridList.size();
 	}

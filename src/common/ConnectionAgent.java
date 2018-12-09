@@ -53,7 +53,6 @@ public class ConnectionAgent extends MessageSource implements Runnable {
 		return !this.socket.isClosed();
 	}
 
-
 	/**
 	 * Closes this Connection Agent
 	 */
