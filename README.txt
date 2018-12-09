@@ -1,37 +1,26 @@
 Author - Kevin Filanowski
-Version - 09/21/18 - 1.0.0
+Auhtor - Jeriah Caplinger
+Version - December 09, 2018 - 1.0.0
 
 TABLE-OF-CONTENTS:
-------------------
+==================
 Description
 Contents
 Compiling
-Usage
-Input File
-------------------
+Usage - Client
+Usage - Server
+Game Logic
+==================
 
 DESCRIPTION:
-------------------
-This program is a general database program for Employee records. It takes two
-files as input, admin.txt and faculty.txt, where both text files contain
-information about each Employee. It will create two tables, where each row
-is an employee. There are a number of operations that can be used, such as:
-0) Quit - Exits the program
-1) Intersect - Creates a new table from two tables comprised of records
-that have the same value for a specific attribute.
-2) Difference - Creates a new table comprised of records in one table
-but not another.
-3) Union - Creates a new table comprised of records that occur in both tables.
-4) Select - Creates a new table comprised of nodes having a value for a
-specific attribute
-5) Remove - Removes a table record by a matching ID.
-6) Print both tables.
-
-The program will be fairly picky with the input file, described in the
-section 'INPUT FILE'
+==================
+A command-line based BattleShip game including a client and a server.
+There may be multiple players playing against each other, but a minimum of
+two players is required. 
+See usage for the client and the server for specific details about each.
 
 CONTENTS:
-------------------
+==================
 README - This file.
 doc - A HTML document showing off the java docs.
 src - A folder containing the source files of the program.
@@ -58,34 +47,51 @@ other class files : The program compiled from my home computer, but it is
 recommended you re-compile.
 
 COMPILING:
-------------------
-To compile the program, ensure that the files described in 'CONTENT',
-specifically the src folder, are all in the same directory.
-Then run the following command to compile all java files in your current
-directory:
+==================
+To compile the program, 
+First ensure that we are in the directory BattleShip/src, and that the
+desired files are within the src directory.
+Then in the terminal, run the following command to compile all files:
+javac */*.java
 
-javac *.java
+There should be no errors or warnings. Many class files should appear
+in their respective folders.
 
-There should be no errors or warnings. Many class files should appear.
+USAGE - CLIENT:
+==================
+A client can join a server lobby by typing:
+/java client/BattleDriver <host address> <port number> <username>
+or 
+./java client/BattleDriver <host address> <port number> <username>
 
-USAGE:
-------------------
-java Database
-or
-./java Database
+When a player joins the server lobby, they
+have two useable command options:
+/quit : Closes the connection with the server.
+/play : Starts the game with all of the players currently in the lobby,
+        so as long as there are at least two players waiting.
 
-A menu will appear from there, and the user can navigate that.
+Once the game is started, each player is assigned a game board with ships
+randomly placed onto it. Players also have three useable command options:
+/attack <user> <x coordinate> <y coordinate> : This command attacks a specified
+                                               player's coordinates. 
+/show <user> : Shows the public game board of another user, or the private
+               game board of the user calling on the command. The public
+               game board shows only the hits and misses, while the private
+               game board shows both the placement of the ships and the hits
+               and misses.
+/quit : Closes the connection with the server, and kicks them out of the game.
 
-Input File:
-------------------
-The database is pretty rigid at detecting errors in the input files.
-Ideally, to keep things nice and clean, we should have 7 pieces of employee
-data on each line, so that each line represents one row in the table.
-The information must be input in the following order, with any amount of
-spacing in between each piece:
+USAGE - SERVER:
+==================
+A server can be created to serve multiple clients and host the BattleShip game.
 
-First_Name  Last_Name  Martial_Status  ID  Phone_Number  Division  Years_Worked
+/java server/BattleShipDriver [port]
+or 
+./java server/BattleShipDriver [port]
 
-The program will check for any strange characters in names, as well as check
-if phone number, division, years worked, and ID are integers only. Incorrect
-or missing information will be mentioned, and the program will gracefully exit.
+When a server is created, it will begin listening for client connections.
+The server handles the logic of the game and handles the requests sent by
+the clients.
+
+GAME LOGIC:
+==================
