@@ -6,6 +6,9 @@ import java.net.Socket;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+/**
+ * 
+ */
 public class ConnectionAgent extends MessageSource implements Runnable {
 	/**  **/
 	private Socket socket;

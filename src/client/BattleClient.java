@@ -96,10 +96,11 @@ public class BattleClient extends MessageSource implements MessageListener {
 	}
 	
 	/**
-	 * 
+	 * Closes the connection agent.
+	 * @param MessageSource source - The MessageSource to close.
 	 */
 	public void sourceClosed(MessageSource source) {
-		
+		((ConnectionAgent)source).close();
 	}
 	
 	/**

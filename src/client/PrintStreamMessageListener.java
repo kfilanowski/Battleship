@@ -1,7 +1,6 @@
 package client;
 
 import java.io.PrintStream;
-
 import common.MessageListener;
 import common.MessageSource;
 

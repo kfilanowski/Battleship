@@ -3,11 +3,12 @@ package server;
 import common.MessageListener;
 import common.MessageSource;
 import common.ConnectionAgent;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.InputMismatchException;
 
 /**
  * BattleServer processes client requests for the BattleShip Game.
@@ -32,7 +33,7 @@ public class BattleServer implements MessageListener {
 	/** Game class for game logic. */
 	protected Game game;
 	/** A map of connection agents. */
-	HashMap<String, ConnectionAgent> agents; // maybe not even useful. might be able to do one arraylist only.
+	HashMap<String, ConnectionAgent> agents;
 	/** An ArrayList of usernames in the game. Used to decide the turn. */
 	ArrayList<String> usernames;
 	
@@ -56,8 +57,6 @@ public class BattleServer implements MessageListener {
 		agents = new HashMap<String, ConnectionAgent>();
 		usernames = new ArrayList<String>();
 		serverSocket = new ServerSocket(port);
-		Thread acceptSockets = new Thread(new ServerAcceptThread());
-		acceptSockets.start();
 	}
 	
 	/**
@@ -72,8 +71,6 @@ public class BattleServer implements MessageListener {
 		agents = new HashMap<String, ConnectionAgent>();
 		usernames = new ArrayList<String>();
 		serverSocket = new ServerSocket(port);
-		Thread acceptSockets = new Thread(new ServerAcceptThread());
-		acceptSockets.start();
 	}
 
 	/**
@@ -99,10 +96,11 @@ public class BattleServer implements MessageListener {
 	}
 	
 	/**
-	 * 
+	 * Creates a new thread to isolate the serverSocket.accept(),
+	 * and listens for new connections.
 	 */
 	public void listen() {
-		// what does this even do? should we just use listen instead of addConnectAgent?
+		new Thread(new ServerAcceptThread()).start();
 	}
 
 	/**
@@ -151,7 +149,7 @@ public class BattleServer implements MessageListener {
 	 */
 	private void parseCommands(String message, ConnectionAgent agent) throws
 	 		CoordinateOutOfBoundsException, IllegalCoordinateException, 
-	 		InputMismatchException{
+	 		InputMismatchException {
 		String[] command = message.split(" ");
 		switch(command[0]) {
 			case "/join":   joinCommand(command, agent);   break;
@@ -161,7 +159,6 @@ public class BattleServer implements MessageListener {
 			case "/quit":   quitCommand(agent);            break;
 		}
 	}
-
 
 	/**
 	 * Called when a new message is recieved from any of the clients.
@@ -178,7 +175,6 @@ public class BattleServer implements MessageListener {
 			System.out.println(ex.getMessage());
 		}
 	}
-
 
 	/**
 	 * The logic behind the /attack command. Given that it is the player's turn,
@@ -255,7 +251,6 @@ public class BattleServer implements MessageListener {
 		String agentsName = findUsername(agent);
 		// if it is not null
 		if (!agentsName.equals("")) {
-
 			// we remove them from the game list
 			game.removePlayer(agentsName);
 			// we remove them from our connection agent hash map
@@ -291,8 +286,6 @@ public class BattleServer implements MessageListener {
 			}
 		}
 	}
-
-
 
 	/**
 	 * Prints the registered users that are currently in the game.
@@ -399,8 +392,6 @@ public class BattleServer implements MessageListener {
 		}
 		return "";
 	}
-	
-
 
 	/**
 	 * Sends a message to all clients connected to the server.
@@ -418,7 +409,6 @@ public class BattleServer implements MessageListener {
 	 * @param source
 	 */
 	public void sourceClosed(MessageSource source) {
-
 		// we need to get our connection agent from the source
 		ConnectionAgent agent = (ConnectionAgent) source;
 		// we find which connection agent is closed
@@ -460,75 +450,6 @@ public class BattleServer implements MessageListener {
 			}
 		}
 	}
-
-	/*
-	// TESTS GAMEPLAY. Delete this later.
-	public void testGameplay() {
-		Scanner in = new Scanner(System.in);
-		String options = "";
-		int x, y;
-		boolean hit;
-		game.addPlayer("username test");
-
-		do {
-			System.out.println("Enter coordinates to attack");
-			// ************ gives user options for demonstration purposes
-			System.out.println("Or enter 'x' for more options");
-			try {
-				options = in.next();
-				if (options.toLowerCase().equals("x")) {
-					this.options(in);
-					System.out.println("Enter coordinates to attack");
-					x = in.nextInt();
-				} else {
-					x = Integer.parseInt(options);
-				}
-				// ************* end user options for demonstration purposes
-				// x = in.nextInt();
-				y = in.nextInt();
-				hit = game.shoot("username test", x, y);
-				System.out.println("Coordinates were hit?: " + hit);
-				System.out.println(game.getPublicGrid("username test"));
-			} catch (CoordinateOutOfBoundsException ex) {
-				System.out.println(
-						"Coordinates are not on the game board.\n" + "Please pick another set of coordinates:");
-			} catch (IllegalCoordinateException ex) {
-				System.out.println("Coordinates were already hit.\n" + "Please pick another set of coordinates:");
-			} catch (InputMismatchException ex) {
-				System.out.println("Please pick valid coordinates.");
-				System.exit(1);
-			} catch (GameOverException goe) {
-				System.out.println("GAME OVER! All ships have been SUNK! Good game!");
-				System.exit(1);
-			}
-		} while (true);
-	}
-	*/
-
-	/*
-	private void options(Scanner in){
-		boolean go = true;
-		String result = "";
-		while(go) {
-			System.out.println("Enter:\n'Pub' for the public grid\n'Pri' for private grid" +
-					"\n'q' to quit the options screen\n'Q!' to quit the game.");
-			result = in.next();
-			if(result.toLowerCase().equals("pub")){
-				System.out.println(this.game.getPublicGrid("username test"));
-			}else if(result.toLowerCase().equals("pri")){
-				System.out.println(game.getPrivateGrid("username test"));
-			}else if(result.toLowerCase().equals("q")){
-				go = false;
-			}else if(result.toLowerCase().equals("q!")){
-				System.out.println("Quitting game");
-				System.exit(1);
-			}else{
-				System.out.println("Command not recognized, please enter a command from" +
-						" the list");
-			}
-		}
-	}
-	*/
 
 	/**
 	 * This class will be a seperate Thread that accepts clients connecting to

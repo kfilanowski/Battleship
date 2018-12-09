@@ -5,7 +5,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
-
 /**
  * The driver for a Battleship client to play the BattleShip game.
  * 
