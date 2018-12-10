@@ -60,6 +60,8 @@ public class ConnectionAgent extends MessageSource implements Runnable {
 		try {
 			// we first close this socket
 			this.socket.close();
+			this.in.close();
+			this.out.close();
 		}catch(IOException ioe){
 			System.out.println(ioe.getMessage());
 		}
