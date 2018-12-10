@@ -1,5 +1,5 @@
 Author - Kevin Filanowski
-Auhtor - Jeriah Caplinger
+Author - Jeriah Caplinger
 Version - December 09, 2018 - 1.0.0
 
 TABLE-OF-CONTENTS:
