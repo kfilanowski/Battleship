@@ -35,10 +35,11 @@ public class PrintStreamMessageListener implements MessageListener {
 	}
 	
 	/**
-	 * 
+	 * Closes this printstream and prints a useful message to the client
 	 * @param source - The MessageSource.
 	 */
 	public void sourceClosed(MessageSource source) {
-		//what do we do here lol
+		this.out.println("Server has terminated\nEnter any key to exit");
+		this.out.close();
 	}
 }

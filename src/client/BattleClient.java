@@ -102,11 +102,12 @@ public class BattleClient extends MessageSource implements MessageListener {
 	}
 	
 	/**
-	 * Closes the connection agent.
-	 * @param MessageSource source - The MessageSource to close.
+	 * Notifies the PrintStreamMessageListener that the server has terminated
+	 * @param source - The MessageSource to close.
 	 */
 	public void sourceClosed(MessageSource source) {
-		//what is this for?
+		// we close our message source
+		closeMessageSource();
 	}
 	
 	/**
