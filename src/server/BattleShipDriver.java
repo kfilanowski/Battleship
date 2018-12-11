@@ -4,6 +4,7 @@ import java.io.IOException;
 
 /**
  * Initializes a BattleServer for the BattleShip Game.
+ * 
  * @author Kevin Filanowski
  * @author Jeriah Caplinger
  * @version November 2018
@@ -22,6 +23,7 @@ public class BattleShipDriver {
 	/**
 	 * Constructor for BattleShipDriver. Initializes a BattleServer
 	 * on a specified port.
+	 * 
 	 * @param port - The port number to run the battleship server on.
 	 */
 	public BattleShipDriver(int port) throws IOException {
@@ -31,6 +33,7 @@ public class BattleShipDriver {
 	/**
 	 * Constructor for BattleShipDriver. Intiailizies a BattleServer on a
 	 * specified port and specified game board size.
+	 * 
 	 * @param port - The port number to run the battleship server on.
 	 * @param gridSize - The size of the game board.
 	 */

@@ -3,6 +3,7 @@ package server;
 /**
  * Holds ship enumerations that contain the symbol and the size
  * of each ship.
+ * 
  * @author Kevin Filanowski
  * @author Jeriah Caplinger
  * @version November 2018
@@ -21,6 +22,7 @@ public enum Ship {
 
 	/**
 	 * Private Constructor for the ship.
+	 * 
 	 * @param symbol - Symbol for the ship.
 	 * @param size   - Size of the ship.
 	 */
@@ -31,6 +33,7 @@ public enum Ship {
 
 	/**
 	 * Retrieves the symbol of the ship. 
+	 * 
 	 * @return The symbol of the specified ship.
 	 */
 	protected final char getSymbol() {
@@ -39,6 +42,7 @@ public enum Ship {
 
 	/**
 	 * Retrieves the size of the ship.
+	 * 
 	 * @return - The size of the specified ship.
 	 */
 	protected final int size() {

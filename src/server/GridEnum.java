@@ -2,6 +2,7 @@ package server;
 
 /**
  * This enumeration holds common elements inside of a grid.
+ * 
  * @author Kevin Filanowski
  * @author Jeriah Caplinger
  * @version November 2018
@@ -17,6 +18,7 @@ public enum GridEnum {
 
 	/**
 	 * Private constructor for the grid elements.
+	 * 
 	 * @param symbol - The grid element's symbol.
 	 */
 	private GridEnum(char symbol) {
@@ -25,6 +27,7 @@ public enum GridEnum {
 
 	/**
 	 * Retrieves the symbol for the enum.
+	 * 
 	 * @return - The grid element's symbol.
 	 */
 	protected final char getSymbol() {
@@ -33,6 +36,7 @@ public enum GridEnum {
 
 	/**
 	 * A toString to convert the symbol to a string.
+	 * 
 	 * @return - The grid element's symbol.
 	 */
 	public String toString() {

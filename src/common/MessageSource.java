@@ -69,22 +69,25 @@ public abstract class MessageSource{
     }
 
     /**
-     * Notifies <b>all</b> registered listeners that a new message has been received.
+     * Notifies <b>all</b> registered listeners that a new
+     * message has been received.
      *
      * @param message The message this subject received.
      */
     protected void notifyReceipt(String message) {
         for (MessageListener listener : new ArrayList<MessageListener>(messageListeners)) {
             /* 
-             * We wrap this in a try/catch block so that just in case one of our observers screws
-             * up, we don't want to stop notifying other observers.
+             * We wrap this in a try/catch block so that just in case 
+             * one of our observers screws up, we don't want to stop 
+             * notifying other observers.
              */
             try {
                 listener.messageReceived(message, this);
             } catch (RuntimeException ex) {
                 /* 
-                 * We're doing this on a best-effort basis.  If something goes wrong, we don't want
-                 * to stop.  Here, we simply dump the stack and continue.
+                 * We're doing this on a best-effort basis.
+                 * If something goes wrong, we don't want to stop.
+                 * Here, we simply dump the stack and continue.
                  */
                 ex.printStackTrace();
             }

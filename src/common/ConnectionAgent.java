@@ -7,22 +7,25 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
- * 
+ * Essentially the messenger between a client and a server, the ConnectionAgent
+ * notifies its listener of the messages it recieves from the client/server,
+ * and is also able to send messages to the client/server. It is a multipurpose
+ * class, serving both the client and the server.
  */
 public class ConnectionAgent extends MessageSource implements Runnable {
-	/**  **/
+	/** The client socket that the client creates or the server accepts. */
 	private Socket socket;
-	/**  **/
+	/** A scanner to read messages sent to this ConnectionAgent. */
 	private Scanner in;
-	/**  **/
+	/** The output stream that the ConnectionAgent writes to. */
 	private PrintStream out;
-	/**  **/
-	private Thread thread;
 
 	/**
-	 * Constructor for a ConnectionAgent that accepts a Socket. This connection agent will
-	 * be waiting for input from the sender constantly. It can also send messages.
-	 * @param socket the socket to listen from and send messages to
+	 * Constructor for a ConnectionAgent that accepts a Socket. 
+	 * This connection agent will be waiting for input from the sender
+	 * constantly. It can also send messages.
+	 * 
+	 * @param socket - The socket to listen from and send messages to.
 	 */
 	public ConnectionAgent(Socket socket) {
 		this.socket = socket;
@@ -37,8 +40,8 @@ public class ConnectionAgent extends MessageSource implements Runnable {
 	}
 
 	/**
-	 * Sends a message to the socket
-	 * @param message the string message we wish to send
+	 * Sends a message to the socket.
+	 * @param message - The string message we wish to send.
 	 */
 	public void sendMessage(String message) {
 		out.println(message);
@@ -46,15 +49,15 @@ public class ConnectionAgent extends MessageSource implements Runnable {
 	}
 
 	/**
-	 * This tells whether the socket is connected or not
-	 * @return Returns false if the socket is not connected and true if it is
+	 * This tells whether the socket is connected or not.
+	 * @return True if the socket is connected, false otherwise.
 	 */
 	public boolean isConnected() {
 		return !this.socket.isClosed();
 	}
 
 	/**
-	 * Closes this Connection Agent
+	 * Closes this Connection Agent.
 	 */
 	public void close() {
 		try {
@@ -70,9 +73,10 @@ public class ConnectionAgent extends MessageSource implements Runnable {
 	}
 
 	/**
-	 * Our implemented method for threading. It constantly waits on messages from the socket.
-	 * Once a message is received it notifies the message listener that a message has been
-	 * received.
+	 * Our implemented method for threading. 
+	 * It constantly waits on messages from the socket.
+	 * Once a message is received it notifies the message listener that 
+	 * a message has been received.
 	 */
 	public void run() {
 		try {

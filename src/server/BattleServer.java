@@ -169,7 +169,8 @@ public class BattleServer implements MessageListener {
 	public void messageReceived(String message, MessageSource source) {
 		try {
 			parseCommands(message, (ConnectionAgent)source);
-		} catch (CoordinateOutOfBoundsException | IllegalCoordinateException ex) {
+		} catch (CoordinateOutOfBoundsException 
+								| IllegalCoordinateException ex) {
 			((ConnectionAgent) source).sendMessage(ex.getMessage());
 		} catch (InputMismatchException ex) {
 			System.out.println(ex.getMessage());
@@ -177,8 +178,8 @@ public class BattleServer implements MessageListener {
 	}
 
 	/**
-	 * The logic behind the /attack command. Given that it is the player's turn,
-	 * /attack attacks the specified player's coordinates.
+	 * The logic behind the /attack command. Given that it is the player's
+	 * turn, /attack attacks the specified player's coordinates.
 	 * 
 	 * @param command - The arguments sent to the server from the client.
 	 * @param agent   - The ConnectionAgent that sent this message.
@@ -191,34 +192,36 @@ public class BattleServer implements MessageListener {
 	 *                                  valid integers.
 	 */
 	private void attackCommand(String[] command, ConnectionAgent agent) throws
-	CoordinateOutOfBoundsException, IllegalCoordinateException, InputMismatchException{
+				CoordinateOutOfBoundsException, IllegalCoordinateException, 
+												InputMismatchException{
 		// Holds the username of the current player.
 		String username = findUsername(agent);
 		// Holds the result of a hit or miss to that player.
 		boolean hitOrMiss;
-		// if the game is being played and the specified person to attack is playing
+		// If the game is being played and the
+		// specified person to attack is playing.
 		if (game.isGameStarted() && agents.containsKey(command[1])) {
-			// if it is the current players turn and they are not attacking themselves
+			// If it is the current players turn and
+			// they are not attacking themselves.
 			if (usernames.get(current).equals(username) 
 				&& !username.equals(command[1])) {
 				try {
-					// we attempt to shoot at the specified coordinates if it is a
-					// coordinateOutOfBounds or IllegalCoordinateException we simply
-					// print those out in parse commands and allow the client to try again
-					hitOrMiss = game.shoot(command[1],
-							Integer.parseInt(command[2]), Integer.parseInt(command[3]));
+					hitOrMiss = game.shoot(command[1], 
+					Integer.parseInt(command[2]), Integer.parseInt(command[3]));
 					// we tell everyone who the shots were fired at and by who
-					broadcast("Shots fired at " + command[1] + " by " + username);
+					broadcast("Shots fired at " + command[1] 
+										+ " by " + username);
 					// we tell everyone if the shot hit or missed
 					broadcast("Did the shot hit?: " + hitOrMiss);
 				// if the hit resulted	in the player losing their last ship
-				}catch(GameOverException goe){
-					broadcast("HIT & SUNK every ship for player: "+ command[1] + "\n");
+				} catch(GameOverException goe){
+					broadcast("HIT & SUNK every ship for player: " 
+											+ command[1] + "\n");
 					// we boot that player from the game
 					agents.get(command[1]).sendMessage("Enter any key to exit\n");
 					quitCommand(agents.get(command[1]));
 				}
-				// we then let the next player go (if there are any players left)
+				// we then let the next player go.
 				nextTurn();
 			// if they are attacking themselves
 			} else if (username.equals(command[1])) {
@@ -239,8 +242,8 @@ public class BattleServer implements MessageListener {
 	}
 
 	/**
-	 * The logic behind the /quit command. Closes the connections to and from the
-	 * specified user.
+	 * The logic behind the /quit command. Closes the connections to and from
+	 * the specified user.
 	 * 
 	 * @param agent - The ConnectionAgent to stop communicating with.
 	 */
@@ -257,29 +260,33 @@ public class BattleServer implements MessageListener {
 			agents.remove(agentsName);
 			// Remove the username from the list of turns.
 			usernames.remove(agentsName);
-			// we decrement current because if we do not, then a player's turn is skipped
+			// we decrement current because if we do not, 
+			// then a player's turn is skipped.
 			if(this.current > 0){
 				current--;
 			}
-			// we tell everyone the player has left
+			// We tell everyone the player has left.
 			broadcast(agentsName + " surrendered.");
 		}
-		// if the game has started and there is only one player left
+		// If the game has started and there is only one player left.
 		if (game.getTotalPlayers() == 1 && game.isGameStarted()) {
-			// we tell the player that the game is ending because there is only one player
+			// We tell the player that the game is ending
+			// because there is only one player.
 			broadcast("You are the only player left in the Game.." +
-					"\nCongratulations you WON!!!\nGame is ending.\nEnter any key to exit\n");
+					"\nCongratulations you WON!!!\nGame is ending."
+					+ "\nEnter any key to exit\n");
 			game.setGameStarted(false);
 			// we find that single user's name
 			for (String agent1 : agents.keySet()) {
 				agents.get(agent1).close();
-				// we remove the agent from our connection agent hash map
+				// we remove the agent from our connection agent hash map.
 				agents.remove(agent1);
 				// we remove that player from the game grid list
 				game.removePlayer(agent1);
 				// remove the username from the list of turns
 				usernames.remove(agentsName);
-				// we decrement current because if we do not, then a player's turn is skipped
+				// We decrement current because if we do not, 
+				// then a player's turn is skipped.
 				if(this.current > 0){
 					current--;
 				}
@@ -327,7 +334,6 @@ public class BattleServer implements MessageListener {
 			agent.sendMessage("You are already joined.");
 		}
 	}
-
 	
 	/**
 	 * The logic behind the /play command. Starts the game.
@@ -344,10 +350,10 @@ public class BattleServer implements MessageListener {
 			for(String user : agents.keySet()){
 				game.addPlayer(user);
 			}
-			// tell everyone the game has started
 			broadcast("The game begins!");
 			broadcast(usernames.get(current) + " it is your turn.");
-			// 	if we do not have enough players and the game is not already started
+			// If we do not have enough players and
+			// the game is not already started.
 		}else if(agents.size() < 2 && !game.isGameStarted()){
 			agent.sendMessage("Not enough players to play the game.");
 			// if the game is already started
@@ -421,7 +427,8 @@ public class BattleServer implements MessageListener {
 			agents.remove(agentsName);
 			// Remove the username from the list of turns.
 			usernames.remove(agentsName);
-			// we decrement current because if we do not, then a player's turn is skipped
+			// we decrement current because if we do not,
+			// then a player's turn is skipped.
 			if(this.current > 0){
 				current--;
 			}
@@ -430,9 +437,11 @@ public class BattleServer implements MessageListener {
 		}
 		// if the game has started and there is only one player left
 		if (game.getTotalPlayers() == 1 && game.isGameStarted()) {
-			// we tell the player that the game is ending because there is only one player
+			// we tell the player that the game is ending because
+			// there is only one player
 			broadcast("You are the only player left in the Game.." +
-					"\nCongratulations you WON!!!\nGame is ending.\nEnter any key to exit\n");
+					"\nCongratulations you WON!!!\nGame is ending."
+					+ "\nEnter any key to exit\n");
 			game.setGameStarted(false);
 			// we find that single user's name
 			for (String agent1 : agents.keySet()) {
@@ -443,7 +452,8 @@ public class BattleServer implements MessageListener {
 				game.removePlayer(agent1);
 				// remove the username from the list of turns
 				usernames.remove(agentsName);
-				// we decrement current because if we do not, then a player's turn is skipped
+				// we decrement current because if we do not,
+				//  then a player's turn is skipped
 				if(this.current > 0){
 					current--;
 				}

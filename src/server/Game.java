@@ -6,7 +6,7 @@ import java.util.HashMap;
  * The main game logic for BattleShip.
  * @author Kevin Filanowski
  * @author Jeriah Caplinger
- * @version November 2018
+ * @version December 2018
  */
 public class Game {
 	/** Holds the grids for each player. */
@@ -29,6 +29,7 @@ public class Game {
 	/**
 	 * Constructor for the Game.
 	 * Initializes a game board with a specified size.
+	 * 
 	 * @param gridSize - The size of the game.
 	 */
 	protected Game(int gridSize) {
@@ -47,6 +48,7 @@ public class Game {
 	
 	/**
 	 * Remove a player from the game.
+	 * 
 	 * @param username - The username of the player to remove from the game.
 	 */
 	protected void removePlayer(String username) {
@@ -55,7 +57,8 @@ public class Game {
 	
 	/**
 	 * Returns the public formatted grid of a specific player.
-	 * @param username - Which player's grid to retrieve by using their username.
+	 * 
+	 * @param username - Which player's grid to get by using their username.
 	 * @return - A formatted string containing the grid of a specific player.
 	 */
 	protected String getPublicGrid(String username) {
@@ -64,6 +67,7 @@ public class Game {
 
 	/**
 	 * Returns the number of total players playing the game.
+	 * 
 	 * @return The number of players in the game.
 	 */
 	protected int getTotalPlayers(){
@@ -71,7 +75,8 @@ public class Game {
 	}
 
 	/**
-	 * Sets the gameStarted flag to true or false
+	 * Sets the gameStarted flag to true or false.
+	 * 
 	 * @param gameStarted True if the game has been started, false otherwise.
 	 */
 	protected void setGameStarted(boolean gameStarted) {
@@ -79,8 +84,9 @@ public class Game {
 	}
 
 	/**
-	 * Gets the boolean of our game started
-	 * @return whether the game has been started or not
+	 * Gets the boolean of our game started.
+	 * 
+	 * @return True if the game has started, False otherwise.
 	 */
 	protected boolean isGameStarted() {
 		return gameStarted;
@@ -88,6 +94,7 @@ public class Game {
 
 	/**
 	 * Returns the private (Player only) formatted grid of a specific player.
+	 * 
 	 * @param username - Which player's grid to retrieve.
 	 * @return - A formatted string containing the grid of a specific player.
 	 */
@@ -97,17 +104,21 @@ public class Game {
 	
 	/**
 	 * Attempt to shoot to a specific coordinate on a specific player's grid.
+	 * 
 	 * @param x - The x coordinate on the grid.
 	 * @param y - The y coordinate on the grid.
-	 * @return - True if coordinate was a hit, false if it was a miss.
-	 * @throws CoordinateOutOfBoundsException - Thrown when the player chooses a
-	 * coordinate that is not within the size of the grid.
+	 * @return  - True if coordinate was a hit, false if it was a miss.
+	 * @throws CoordinateOutOfBoundsException - Thrown when the player chooses
+	 * 											a coordinate that is not within
+	 * 										    the size of the grid.
 	 * @throws IllegalCoordinateException - Thrown when the player chooses a
 	 * coordinate that has already been attacked. 
-	 * @throws GameOverException - Thrown when the game ends by sinking all ships.
+	 * @throws GameOverException - Thrown when the game ends by sinking all
+	 * 							   ships.
 	 */
 	protected Boolean shoot(String username, int x, int y) throws
-		CoordinateOutOfBoundsException, IllegalCoordinateException, GameOverException {
+		CoordinateOutOfBoundsException, IllegalCoordinateException,
+		GameOverException {
 		if (x >= gridSize || x < 0) {
 			// Tells the client that this coordinate was out of bounds.
 			throw new CoordinateOutOfBoundsException(); 

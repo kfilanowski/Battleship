@@ -9,7 +9,6 @@ Contents
 Compiling
 Usage - Client
 Usage - Server
-Game Logic
 ==================
 
 DESCRIPTION:
@@ -26,25 +25,32 @@ doc - A HTML document showing off the java docs.
 src - A folder containing the source files of the program.
 
 Inside src:
-Database.java : The main driver of the program. This file should be called
-when the program is to be run. This file reads the input, populates the tables,
-and contains the flow of the user interaction and menu.
-Table.java : The code for the generic table. Built using a linked list. This
-file contains the logical part of the operations, such as "union", "select",
-etc.
-Employee.java : This class models an employee, and contains all of the
-data an employee would have. Some of the data include: ID, Divison, Department,
-and so on.
-Person.java : A simple class modeling a person with personal information
-such as their first and last name, and their martial status.
-Status.java : A simple class modeling a martial status.
-AttributeInterface.java : The API for a table record.
-admin.txt : A sample text file showing an example of what the input file
-should look like.
-faculty.txt : A sample text file showing an example of what the input file
-should look like.
-other class files : The program compiled from my home computer, but it is
-recommended you re-compile.
+
+Inside Client: The client-sided portion of BattleShip.
+
+BattleDriver : The driver that initializes the client and passes command line
+               arguments to. This class is also responsible for user input.
+BattleClient : The client that connects to the server and listens for responses
+               from the server, and passes messages along to the server.
+PrintStreamMessageListener: This class listens to BattleClient and controls the
+                            output of what BattleClient recieves.
+
+Inside Common: The files that exist in both client and server.
+ConnectionAgent: The intermediary between the client and the server. This
+                 class serves both the client and the server, and is
+                 responsible for maintaining the connection and sending
+                 and receiving messages to and from the client and server.
+MessageListener: This interface represents observers of MessageSources.
+                 The client, for example, is a message listener. It 
+                 listens for messages from the ConnectionAgent.
+MessageSource: An interface defining the sources of where messages come from.
+               The ConnectionAgent is a message source, as it updates its
+               listers of messages it receives.
+
+Inside Server: 
+
+                 
+
 
 COMPILING:
 ==================
@@ -92,6 +98,3 @@ or
 When a server is created, it will begin listening for client connections.
 The server handles the logic of the game and handles the requests sent by
 the clients.
-
-GAME LOGIC:
-==================
