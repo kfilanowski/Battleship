@@ -144,10 +144,6 @@ public class BattleDriver {
 	public static void main(String[] args) {
 		if (args.length < 3) {
 			printUsageAndExit();
-		} else if (args.length == 4) {
-			/*BattleDriver driver = new BattleDriver(
-				InetAddress.getByName(args[0]), Integer.parseInt(args[1]),
-				 args[2], (PrintStream)args[3]);*/
 		} else {
 			try {
 				BattleDriver driver = new BattleDriver(

@@ -317,7 +317,7 @@ public class BattleServer implements MessageListener {
 	private void joinCommand(String[] command, ConnectionAgent agent){
 		String joined = findUsername(agent);
 		if(!game.isGameStarted() && joined.equals("")) {
-			String name = command[1];
+			String name = command[1].toLowerCase().trim();
 			int number = 1;
 			while(agents.containsKey(name)){
 				name = name + number;

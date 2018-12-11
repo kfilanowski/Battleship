@@ -1,6 +1,6 @@
 Author - Kevin Filanowski
 Author - Jeriah Caplinger
-Version - December 09, 2018 - 1.0.0
+Version - December 10, 2018 - 1.0.0
 
 TABLE-OF-CONTENTS:
 ==================
@@ -48,9 +48,23 @@ MessageSource: An interface defining the sources of where messages come from.
                listers of messages it receives.
 
 Inside Server: 
-
-                 
-
+BattleServer: The server handles the responses sent by the clients,
+              and performs certain actions depending on the command.
+BattleShipDriver: The driver for the server, initializes the server
+                  on a specified port and tells the server to begin
+                  listening for client requests.
+CoordinateOutOfBoundsException: A custom exception for when the server 
+                                receives an attack command that is not 
+                                within the size of the game board.
+Game: The game logic of BattleShip.
+GameOverException: A custom exception that is thrown when the game ends.
+Grid: The grid logic of BattleShip. The results of the game are updated
+      in the grid.
+GridEnum: An enum class holding some of the common elements in the grid.
+IllegalCoordinateException: A custom exception class for when the server
+                            receives attack coordinates that have already
+                            been attacked before.
+Ship: An enum class holding all of the ships and their sizes.
 
 COMPILING:
 ==================
