@@ -112,18 +112,22 @@ or
 When a player joins the server lobby, they
 have two useable command options:
 `/quit` : Closes the connection with the server.
+
 `/play` : Starts the game with all of the players currently in the lobby,
         so as long as there are at least two players waiting.
 
 Once the game is started, each player is assigned a game board with ships
 randomly placed onto it. Players also have three useable command options:
+
 `/attack <user> <x coordinate> <y coordinate>` : This command attacks a specified
                                                player's coordinates. 
+                                               
 `/show <user>` : Shows the public game board of another user, or the private
                game board of the user calling on the command. The public
                game board shows only the hits and misses, while the private
                game board shows both the placement of the ships and the hits
                and misses.
+               
 `/quit` : Closes the connection with the server, and kicks them out of the game.
 
 # Usage for Server
