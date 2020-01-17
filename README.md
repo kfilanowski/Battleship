@@ -10,8 +10,8 @@ December 10, 2018 - 1.0.0
 * [Description](#description)
 * [Contents](#contents)
 * [Compiling](#compiling)
-* [Usage - Client](#usage--client)
-* [Usage - Server](#usage--server)
+* [Usage - Client](#usage-for-client)
+* [Usage - Server](#usage-for-server)
 
 # Description
 A command-line based BattleShip game including a client and a server.
@@ -58,8 +58,8 @@ MessageSource
                listers of messages it receives.
 
 ### Inside Server: 
-BattleServer* 
-The server handles the responses sent by the clients,
+BattleServer
+* The server handles the responses sent by the clients,
               and performs certain actions depending on the command.
               
 BattleShipDriver
@@ -71,6 +71,7 @@ CoordinateOutOfBoundsException
 * A custom exception for when the server 
                                 receives an attack command that is not 
                                 within the size of the game board.
+                                
 Game
 * The game logic of BattleShip.
 
@@ -102,7 +103,7 @@ Then in the terminal, run the following command to compile all files:
 There should be no errors or warnings. Many class files should appear
 in their respective folders.
 
-# Usage - Client
+# Usage for Client
 A client can join a server lobby by typing:
 `/java client/BattleDriver <host address> <port number> <username>`
 or 
@@ -125,7 +126,7 @@ randomly placed onto it. Players also have three useable command options:
                and misses.
 `/quit` : Closes the connection with the server, and kicks them out of the game.
 
-# Usage - Server:
+# Usage for Server
 A server can be created to serve multiple clients and host the BattleShip game.
 
 `/java server/BattleShipDriver [port]`
